@@ -1,0 +1,152 @@
+{
+  "_Header-B68GKmy8.js": {
+    "file": "assets/Header-B68GKmy8.js",
+    "name": "Header",
+    "imports": [
+      "_components-DXjvQtQo.js"
+    ]
+  },
+  "_components-DXjvQtQo.js": {
+    "file": "assets/components-DXjvQtQo.js",
+    "name": "components"
+  },
+  "app/entry.client.tsx": {
+    "file": "assets/entry.client-Ck8zLbTw.js",
+    "name": "entry.client",
+    "src": "app/entry.client.tsx",
+    "isEntry": true,
+    "imports": [
+      "_components-DXjvQtQo.js"
+    ]
+  },
+  "app/root.tsx?__remix-build-client-route": {
+    "file": "assets/root-BBIRDYlk.js",
+    "name": "root",
+    "src": "app/root.tsx?__remix-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_components-DXjvQtQo.js"
+    ],
+    "css": [
+      "assets/root-DFlEfVV4.css"
+    ]
+  },
+  "app/routes/_index.tsx?__remix-build-client-route": {
+    "file": "assets/_index-BHgynf7Q.js",
+    "name": "_index",
+    "src": "app/routes/_index.tsx?__remix-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_components-DXjvQtQo.js",
+      "_Header-B68GKmy8.js"
+    ]
+  },
+  "app/routes/campaigns.$id.download.tsx?__remix-build-client-route": {
+    "file": "assets/campaigns._id.download-l0sNRNKZ.js",
+    "name": "campaigns._id.download",
+    "src": "app/routes/campaigns.$id.download.tsx?__remix-build-client-route",
+    "isEntry": true
+  },
+  "app/routes/campaigns.$id.edit.tsx?__remix-build-client-route": {
+    "file": "assets/campaigns._id.edit-0OGTS-ZI.js",
+    "name": "campaigns._id.edit",
+    "src": "app/routes/campaigns.$id.edit.tsx?__remix-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_components-DXjvQtQo.js",
+      "_Header-B68GKmy8.js"
+    ]
+  },
+  "app/routes/campaigns.$id.map.tsx?__remix-build-client-route": {
+    "file": "assets/campaigns._id.map-8vFiE9s3.js",
+    "name": "campaigns._id.map",
+    "src": "app/routes/campaigns.$id.map.tsx?__remix-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_components-DXjvQtQo.js",
+      "_Header-B68GKmy8.js"
+    ]
+  },
+  "app/routes/campaigns.$id.tsx?__remix-build-client-route": {
+    "file": "assets/campaigns._id-Ch2S0kXk.js",
+    "name": "campaigns._id",
+    "src": "app/routes/campaigns.$id.tsx?__remix-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_components-DXjvQtQo.js",
+      "_Header-B68GKmy8.js"
+    ]
+  },
+  "app/routes/campaigns.$id.upload.tsx?__remix-build-client-route": {
+    "file": "assets/campaigns._id.upload-NoFUN7gc.js",
+    "name": "campaigns._id.upload",
+    "src": "app/routes/campaigns.$id.upload.tsx?__remix-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_components-DXjvQtQo.js",
+      "_Header-B68GKmy8.js"
+    ]
+  },
+  "app/routes/campaigns._index.tsx?__remix-build-client-route": {
+    "file": "assets/campaigns._index-qjggKsUk.js",
+    "name": "campaigns._index",
+    "src": "app/routes/campaigns._index.tsx?__remix-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_components-DXjvQtQo.js"
+    ]
+  },
+  "app/routes/campaigns.new.tsx?__remix-build-client-route": {
+    "file": "assets/campaigns.new-DwRaIpW_.js",
+    "name": "campaigns.new",
+    "src": "app/routes/campaigns.new.tsx?__remix-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_components-DXjvQtQo.js"
+    ]
+  },
+  "app/routes/campaigns.tsx?__remix-build-client-route": {
+    "file": "assets/campaigns-D4F8-xzv.js",
+    "name": "campaigns",
+    "src": "app/routes/campaigns.tsx?__remix-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_components-DXjvQtQo.js",
+      "_Header-B68GKmy8.js"
+    ]
+  },
+  "app/routes/login.tsx?__remix-build-client-route": {
+    "file": "assets/login-Z5AlnBem.js",
+    "name": "login",
+    "src": "app/routes/login.tsx?__remix-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_components-DXjvQtQo.js"
+    ]
+  },
+  "app/routes/logout.tsx?__remix-build-client-route": {
+    "file": "assets/logout-l0sNRNKZ.js",
+    "name": "logout",
+    "src": "app/routes/logout.tsx?__remix-build-client-route",
+    "isEntry": true
+  },
+  "app/routes/segments.tsx?__remix-build-client-route": {
+    "file": "assets/segments-CTpJ-Bae.js",
+    "name": "segments",
+    "src": "app/routes/segments.tsx?__remix-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_components-DXjvQtQo.js",
+      "_Header-B68GKmy8.js"
+    ]
+  },
+  "app/routes/signup.tsx?__remix-build-client-route": {
+    "file": "assets/signup-BBDZLz9L.js",
+    "name": "signup",
+    "src": "app/routes/signup.tsx?__remix-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_components-DXjvQtQo.js"
+    ]
+  }
+}

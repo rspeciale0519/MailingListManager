@@ -1,0 +1,1 @@
+import{u as e,j as s,O as r}from"./components-DXjvQtQo.js";import{H as m}from"./Header-B68GKmy8.js";function x(){const{user:a,campaigns:i}=e();return s.jsxs("div",{className:"min-h-screen bg-gray-50",children:[s.jsx(m,{user:a}),s.jsx("main",{className:"py-10",children:s.jsx("div",{className:"max-w-7xl mx-auto sm:px-6 lg:px-8",children:s.jsx(r,{})})})]})}export{x as default};
