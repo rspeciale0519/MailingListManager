@@ -1250,6 +1250,14 @@ SKIPTRACE_PROVIDER_API_KEY=xxx
 STRIPE_SECRET_KEY=sk_live_xxx
 STRIPE_WEBHOOK_SECRET=whsec_xxx
 
+# AccuZIP Setup
+# - Obtain API key from AccuZIP account (required access level: 2+)
+# - Test environment: Contact api@accuzip.com for test credentials
+# - Production: Use GUID-format API key from account dashboard
+# - Setup Guide: docs/API-AccuZip.md
+# - Rate Limits: 12 files/minute, 2M rows max per file
+# - Credit Monitoring: Implement alerts at 500/100 credits remaining
+
 # Monitoring
 SENTRY_DSN=https://xxx@sentry.io/xxx
 ```

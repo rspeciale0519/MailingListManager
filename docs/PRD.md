@@ -839,6 +839,13 @@ Build the most intuitive, powerful, and secure mailing list management platform 
 - ✅ Zero unintended charges (strict quota enforcement)
 - ✅ Full audit trail for compliance
 
+**Implementation Details:** See [AccuZIP API Integration Guide](API-AccuZip.md) for:
+- Point-of-Entry API for real-time validation
+- Batch processing workflow for large lists
+- Field mapping requirements (MLM ↔ AccuZIP)
+- Response field descriptions and DPV codes
+- Credit consumption and cost estimation
+
 ---
 
 ### 11. Segments & Dynamic Lists

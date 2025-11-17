@@ -1348,34 +1348,44 @@ git branch -d feature/contacts-inline-edit
 
 ### Backend: Address Validation (AccuZip)
 
+**📖 Implementation Reference:** [AccuZIP API Integration Guide](API-AccuZip.md)
+
 - [ ] **5.5 Database Schema: Validation**
   - [ ] Create `validation_jobs` table migration (<150 LOC)
   - [ ] Add indexes
   - [ ] Run migration
+  - [ ] **Reference:** See [Database-Schema.md](Database-Schema.md) for schema details
 
 - [ ] **5.6 AccuZip Integration**
   - [ ] Create `integrations/accuzip.client.ts` (<300 LOC)
   - [ ] Implement batch validation API calls
   - [ ] Add retry logic with backoff
+  - [ ] **Reference:** [API-AccuZip.md Section 6](API-AccuZip.md#6-workflow-steps-for-mailing-list-validation-and-filtering) for upload/processing workflow
+  - [ ] **Reference:** [API-AccuZip.md Section 4](API-AccuZip.md#4-api-rate-limits-and-file-constraints) for rate limits
   - [ ] Write tests
 
 - [ ] **5.7 Validation Service**
   - [ ] Create `validation.service.ts` (<400 LOC)
   - [ ] Batch contacts for validation
-  - [ ] Parse AccuZip responses
+  - [ ] **Implement field mapping:** MLM contacts → AccuZIP format (see [API-AccuZip.md Section 18.1](API-AccuZip.md#181-batch-upload-mlm-contacts--accuzip-csv))
+  - [ ] Parse AccuZIP responses (see [API-AccuZip.md Section 19](API-AccuZip.md#19-response-transformation-examples))
   - [ ] Write results back to contacts
+  - [ ] **Reference:** [API-AccuZip.md Section 5](API-AccuZip.md#5-real-time-single-address-validation-point-of-entry-api) for Point-of-Entry validation
   - [ ] Write tests
 
 - [ ] **5.8 Validation Worker**
   - [ ] Create `workers/validate.worker.ts` (<350 LOC)
   - [ ] Process validation jobs
   - [ ] Track progress
+  - [ ] **Reference:** [API-AccuZip.md Section 6.2](API-AccuZip.md#step-2-retrieve-data-quality-results-and-counts) for DQ results parsing
   - [ ] Write tests
 
 - [ ] **5.9 Validation Endpoints**
   - [ ] `POST /orgs/:org_id/validate/start` (<200 LOC)
   - [ ] `GET /orgs/:org_id/validate/:job_id` (<100 LOC)
   - [ ] `POST /orgs/:org_id/validate/:job_id/cancel` (<100 LOC)
+  - [ ] **Reference:** [API-Specification.md Validation Endpoints](API-Specification.md#validation-endpoints)
+  - [ ] **Reference:** [API-AccuZip.md Section 12](API-AccuZip.md#12-webhook-implementation) for webhook setup
   - [ ] Write tests
 
 ### Backend: Skip Trace

@@ -1142,8 +1142,13 @@ CREATE POLICY tenant_isolation ON validation_jobs
   FOR ALL TO authenticated_user
   USING (org_id = current_setting('app.org_id')::uuid);
 
-COMMENT ON TABLE validation_jobs IS 'Address validation job tracking via AccuZip/USPS.';
+COMMENT ON TABLE validation_jobs IS 'Address validation job tracking via AccuZip/USPS. See docs/API-AccuZip.md for field mappings and integration details.';
 ```
+
+**Field Mapping Reference:**
+- `input_mapping`: Maps MLM contact fields → AccuZIP input parameters (see [API-AccuZip.md Section 18.2](API-AccuZip.md#182-point-of-entry-api-mlm--accuzip-parameters))
+- `results`: Stores AccuZIP validated_address response (see [API-AccuZip.md Section 18.3](API-AccuZip.md#183-accuzip-response--mlm-database-fields))
+- For complete field mapping tables and transformation examples, see [AccuZIP Integration Guide](API-AccuZip.md)
 
 #### skiptrace_jobs
 **Purpose:** Skip trace job tracking
