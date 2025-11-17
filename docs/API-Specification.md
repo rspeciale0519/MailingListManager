@@ -1450,6 +1450,15 @@ options: {
 }
 ```
 
+**AccuZIP Integration:** This endpoint integrates with AccuZIP's CASS-certified validation service. For detailed information about:
+- AccuZIP API authentication and rate limits
+- Field mapping between MLM and AccuZIP formats
+- DPV code interpretations (Y/D/S/N status codes)
+- Credit consumption and cost estimation
+- Response transformation examples
+
+See: [AccuZIP API Integration Guide](API-AccuZip.md)
+
 **Response:** `202 Accepted`
 ```json
 {

@@ -99,6 +99,32 @@ Authentication for most API calls requires an **API Key**, which is a GUID key p
 * Complete API Documentation: docs.accuzip.com
 * API Technical Support: api@accuzip.com
 
+---
+
+## **Related Documentation**
+
+This AccuZIP integration guide is part of the Mailing List Manager documentation suite:
+
+### **Planning & Architecture**
+- **[PRD.md](PRD.md)** - Product requirements for address validation feature (Section 10)
+- **[Technical-Architecture.md](Technical-Architecture.md)** - System architecture and environment configuration
+- **[Development-Roadmap.md](Development-Roadmap.md)** - Implementation tasks for validation system (Phase 5)
+
+### **Implementation Specifications**
+- **[API-Specification.md](API-Specification.md#validation-endpoints)** - MLM validation endpoint specifications
+- **[Database-Schema.md](Database-Schema.md)** - `validation_jobs` table schema and field mappings
+
+### **Setup & Installation**
+- **[README.md](../README.md)** - Project setup and AccuZIP account requirements
+
+### **Key Integration Points**
+- **Field Mapping:** See [Section 18](#18-field-mapping-reference-mlm--accuzip) below for MLM ↔ AccuZIP field mappings
+- **Database Storage:** See [Section 19](#19-response-transformation-examples) below for response transformation examples
+- **API Endpoints:** See [API-Specification.md](API-Specification.md) for MLM's validation API design
+- **Implementation Tasks:** See [Development-Roadmap.md](Development-Roadmap.md) Phase 5 for step-by-step build tasks
+
+---
+
 ## **5\. Real-Time Single Address Validation (Point-of-Entry API)**
 
 For applications requiring real-time validation of individual addresses (e.g., user registration forms, checkout flows, profile updates), AccuZIP provides a CASS Point-of-Entry API that validates addresses instantly without the batch file processing workflow.
@@ -1624,9 +1650,565 @@ function calculateRunoutDate(remaining, monthlyBurnRate) {
 
 **Integration Support:**
 
-* API Support: api@accuzip.com  
-* Technical Support: 805.461.7300  
+* API Support: api@accuzip.com
+* Technical Support: 805.461.7300
 * Sales Support: 800.233.0555
+
+## **18. Field Mapping Reference: MLM ↔ AccuZIP**
+
+This section documents how Mailing List Manager contact fields map to AccuZIP API parameters and responses.
+
+### **18.1 Batch Upload: MLM Contacts → AccuZIP CSV**
+
+When uploading a mailing list for batch validation, map MLM contact fields to AccuZIP required CSV columns:
+
+| MLM Contact Field | AccuZIP CSV Column | Required | Format Notes |
+|-------------------|-------------------|----------|--------------|
+| `first_name` | `First` | ✅ Yes | Can contain full name if `last_name` empty |
+| `last_name` | `Last` | Optional | Separate last name (recommended) |
+| `middle_name` | `Middle` | Optional | Middle name or initial |
+| `name_prefix` | `Sal` | Optional | Mr, Mrs, Dr, etc. |
+| `company_name` | `Company` | Optional | Important for NCOA matching |
+| `address_line1` | `Address` | ✅ Yes | Primary street address |
+| `address_line2` | `Address2` | Optional | Apt, Suite, Unit, etc. |
+| `city` | `City` | ✅ Yes | Can contain City+State+ZIP if split |
+| `state` | `St` | Optional | 2-letter state code (recommended) |
+| `postal_code` | `Zip` | Optional | ZIP or ZIP+4 (recommended) |
+| `id` (UUID) | Custom column | Optional | For tracking; use `col_*` mapping params |
+
+**CSV Generation Example:**
+```javascript
+// Example: Generate AccuZIP CSV from MLM contacts
+function generateAccuZIPCSV(contacts) {
+  const headers = ['First', 'Last', 'Address', 'Address2', 'City', 'St', 'Zip', 'Company'];
+  const rows = contacts.map(contact => [
+    contact.first_name || '',
+    contact.last_name || '',
+    contact.address_line1 || '',
+    contact.address_line2 || '',
+    contact.city || '',
+    contact.state || '',
+    contact.postal_code || '',
+    contact.company_name || ''
+  ]);
+
+  return [headers, ...rows]
+    .map(row => row.map(cell => `"${cell}"`).join(','))
+    .join('\n');
+}
+```
+
+### **18.2 Point-of-Entry API: MLM → AccuZIP Parameters**
+
+For real-time single address validation, map MLM fields to Point-of-Entry API parameters:
+
+| MLM Contact Field | AccuZIP API Parameter | Required | Example Value |
+|-------------------|----------------------|----------|---------------|
+| `address_line1` | `AZSetQuery_iadl1` | ✅ Yes | "1600 Amphitheatre Parkway" |
+| `address_line2` | `AZSetQuery_iadl2` | No | "Suite 200" or "" |
+| `address_line3` | `AZSetQuery_iadl3` | No | "" (rarely used) |
+| `city` | `AZSetQuery_ictyi` | ✅ Yes | "Mountain View" |
+| `state` | `AZSetQuery_istai` | ✅ Yes | "CA" |
+| `postal_code` | `AZSetQuery_izipc` | ✅ Yes | "94043" |
+| `id` (UUID) | `AZSetQuery_iforeignid` | No | "contact-uuid-1234" |
+| `country` | `AZSetQuery_icountry` | No | "CA" for Canada, "US" or omit |
+
+**Request Mapping Example:**
+```typescript
+// Example: Map MLM contact to AccuZIP Point-of-Entry request
+interface MLMContact {
+  id: string;
+  address_line1: string;
+  address_line2?: string;
+  city: string;
+  state: string;
+  postal_code: string;
+}
+
+function mapToAccuZIPRequest(contact: MLMContact, apiKey: string) {
+  return {
+    API_KEY: apiKey,
+    AZSetQuery_iadl1: contact.address_line1,
+    AZSetQuery_iadl2: contact.address_line2 || '',
+    AZSetQuery_iadl3: '',
+    AZSetQuery_ictyi: contact.city,
+    AZSetQuery_istai: contact.state,
+    AZSetQuery_izipc: contact.postal_code,
+    AZSetQuery_iforeignid: contact.id
+  };
+}
+```
+
+### **18.3 AccuZIP Response → MLM Database Fields**
+
+Map AccuZIP validation response fields to MLM database storage:
+
+| AccuZIP Response Field | MLM Database Field | Type | Notes |
+|-----------------------|-------------------|------|-------|
+| `validated_address.delivery_line_1` | `contacts.address_line1_validated` | varchar | CASS-standardized address |
+| `validated_address.delivery_line_2` | `contacts.address_line2_validated` | varchar | Standardized secondary |
+| `validated_address.city` | `contacts.city_validated` | varchar | USPS-standardized city |
+| `validated_address.state` | `contacts.state_validated` | varchar(2) | 2-letter state code |
+| `validated_address.zip` | `contacts.postal_code_validated` | varchar(5) | 5-digit ZIP |
+| `validated_address.zip4` | `contacts.zip4` | varchar(4) | ZIP+4 extension |
+| `validated_address.dpv_code` | `validation_jobs.results.dpv_code` | varchar | Y/D/S/N validation status |
+| `validated_address.carrier_route` | `contacts.carrier_route` | varchar | USPS carrier route |
+| `validated_address.delivery_point` | `contacts.delivery_point` | varchar(2) | Delivery point code |
+| `validated_address.record_type` | `contacts.address_type` | varchar | S/P/H/R (Street/PO Box/Highrise/Rural) |
+
+**DPV Code Interpretation:**
+- `Y` = **Deliverable** - Both primary and secondary confirmed → `is_deliverable = true`
+- `D` = **Primary Only** - Secondary missing → `is_deliverable = false`, `validation_warning = 'Missing apartment/suite'`
+- `S` = **Secondary Unconfirmed** - Secondary present but not verified → `is_deliverable = false`, `validation_warning = 'Apartment/suite unconfirmed'`
+- `N` = **Not Deliverable** - Address not confirmed → `is_deliverable = false`, `validation_error = 'Address not found'`
+
+### **18.4 Batch GET QUOTE Response → MLM Statistics**
+
+Map AccuZIP Data Quality results to MLM job statistics:
+
+| AccuZIP DQ Field | MLM Field | Calculation | Display |
+|-----------------|-----------|-------------|---------|
+| `dq_dpvhsa_y` | `validation_jobs.deliverable_count` | Direct | "1,892 deliverable" |
+| `dq_dpvhsa_d` | `validation_jobs.missing_secondary_count` | Direct | "11 missing apt/suite" |
+| `dq_dpvhsa_s` | `validation_jobs.unconfirmed_secondary_count` | Direct | "70 unconfirmed apt/suite" |
+| `dq_dpvhsa_n` | `validation_jobs.undeliverable_count` | Direct | "27 undeliverable" |
+| `dq_dpvhsv` | `validation_jobs.vacant_count` | Direct | "31 vacant addresses" |
+| N/A | `validation_jobs.total_problematic` | Sum: d+s+n+v | "139 addresses need review" |
+| `total_records` | `validation_jobs.total_records` | Direct | "2,000 total records" |
+
+**Statistics Display Example:**
+```javascript
+// Example: Calculate and display validation statistics
+function calculateValidationStats(dqResults) {
+  const deliverable = parseInt(dqResults.dq_dpvhsa_y);
+  const missingSecondary = parseInt(dqResults.dq_dpvhsa_d);
+  const unconfirmedSecondary = parseInt(dqResults.dq_dpvhsa_s);
+  const undeliverable = parseInt(dqResults.dq_dpvhsa_n);
+  const vacant = parseInt(dqResults.dq_dpvhsv);
+  const total = parseInt(dqResults.total_records);
+
+  return {
+    deliverable,
+    deliverablePercent: ((deliverable / total) * 100).toFixed(1),
+    problematic: missingSecondary + unconfirmedSecondary + undeliverable + vacant,
+    breakdown: {
+      missingSecondary,
+      unconfirmedSecondary,
+      undeliverable,
+      vacant
+    },
+    total
+  };
+}
+
+// Display: "1,892 deliverable (94.6%) • 139 need review"
+```
+
+---
+
+## **19. Response Transformation Examples**
+
+This section demonstrates how to transform AccuZIP API responses into Mailing List Manager database records.
+
+### **19.1 Point-of-Entry Validation Response → Database Update**
+
+**AccuZIP Point-of-Entry Response:**
+```json
+{
+  "success": true,
+  "validated_address": {
+    "delivery_line_1": "1600 AMPHITHEATRE PKWY",
+    "delivery_line_2": "",
+    "city": "MOUNTAIN VIEW",
+    "state": "CA",
+    "zip": "94043",
+    "zip4": "1351",
+    "dpv_code": "Y",
+    "dpv_confirmation": "Y",
+    "dpv_footnote": "AABB",
+    "carrier_route": "C909",
+    "delivery_point": "00",
+    "check_digit": "6",
+    "record_type": "S",
+    "address_type": "FIRM"
+  },
+  "foreign_id": "contact-uuid-1234"
+}
+```
+
+**Transform to MLM Database Update:**
+```typescript
+// TypeScript transformation function
+interface AccuZIPValidationResponse {
+  success: boolean;
+  validated_address: {
+    delivery_line_1: string;
+    delivery_line_2: string;
+    city: string;
+    state: string;
+    zip: string;
+    zip4: string;
+    dpv_code: 'Y' | 'D' | 'S' | 'N';
+    carrier_route: string;
+    delivery_point: string;
+    record_type: string;
+    address_type: string;
+  };
+  foreign_id: string;
+}
+
+function transformValidationResponse(
+  response: AccuZIPValidationResponse
+): Partial<MLMContact> {
+  const { validated_address: va } = response;
+
+  // Determine deliverability
+  const isDeliverable = va.dpv_code === 'Y';
+
+  // Generate warnings/errors
+  let validationWarning: string | null = null;
+  let validationError: string | null = null;
+
+  switch (va.dpv_code) {
+    case 'D':
+      validationWarning = 'Apartment or suite number may be missing';
+      break;
+    case 'S':
+      validationWarning = 'Apartment or suite number could not be verified';
+      break;
+    case 'N':
+      validationError = 'Address could not be validated';
+      break;
+  }
+
+  return {
+    // Store validated/standardized address
+    address_line1_validated: va.delivery_line_1,
+    address_line2_validated: va.delivery_line_2 || null,
+    city_validated: va.city,
+    state_validated: va.state,
+    postal_code_validated: va.zip,
+    zip4: va.zip4,
+
+    // Deliverability status
+    is_deliverable: isDeliverable,
+    validation_status: isDeliverable ? 'valid' : 'invalid',
+    validation_warning: validationWarning,
+    validation_error: validationError,
+
+    // USPS metadata
+    carrier_route: va.carrier_route,
+    delivery_point: va.delivery_point,
+    address_type: va.record_type, // S/P/H/R
+
+    dpv_code: va.dpv_code,
+
+    // Audit fields
+    validated_at: new Date(),
+    validation_provider: 'accuzip'
+  };
+}
+
+// Usage in service
+async function validateContact(contactId: string) {
+  const contact = await db.contacts.findUnique({ where: { id: contactId } });
+
+  const accuzipRequest = mapToAccuZIPRequest(contact, ACCUZIP_API_KEY);
+  const accuzipResponse = await fetch(ACCUZIP_POINT_OF_ENTRY_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(accuzipRequest)
+  }).then(res => res.json());
+
+  if (accuzipResponse.success) {
+    const updateData = transformValidationResponse(accuzipResponse);
+
+    await db.contacts.update({
+      where: { id: contactId },
+      data: updateData
+    });
+
+    return { success: true, isDeliverable: updateData.is_deliverable };
+  }
+
+  return { success: false, error: 'Validation failed' };
+}
+```
+
+**Resulting Database Record:**
+```sql
+UPDATE contacts SET
+  address_line1_validated = '1600 AMPHITHEATRE PKWY',
+  address_line2_validated = NULL,
+  city_validated = 'MOUNTAIN VIEW',
+  state_validated = 'CA',
+  postal_code_validated = '94043',
+  zip4 = '1351',
+  is_deliverable = true,
+  validation_status = 'valid',
+  validation_warning = NULL,
+  validation_error = NULL,
+  carrier_route = 'C909',
+  delivery_point = '00',
+  address_type = 'S',
+  dpv_code = 'Y',
+  validated_at = '2025-11-17 10:30:00',
+  validation_provider = 'accuzip'
+WHERE id = 'contact-uuid-1234';
+```
+
+### **19.2 Batch GET QUOTE Response → validation_jobs Table**
+
+**AccuZIP GET QUOTE Response:**
+```json
+{
+  "dq_dpvhsa_s": "70",
+  "dq_dpvhsa_d": "11",
+  "dq_dpvhsv": "31",
+  "dq_dpvhsa_y": "1892",
+  "dq_dpvhsa_n": "27",
+  "dq_message": "DQ results have been calculated successfully",
+  "success": true,
+  "total_records": "2000"
+}
+```
+
+**Transform to validation_jobs Record:**
+```typescript
+interface AccuZIPDQResults {
+  dq_dpvhsa_y: string;  // Deliverable
+  dq_dpvhsa_d: string;  // Missing secondary
+  dq_dpvhsa_s: string;  // Unconfirmed secondary
+  dq_dpvhsa_n: string;  // Undeliverable
+  dq_dpvhsv: string;    // Vacant
+  total_records: string;
+  success: boolean;
+}
+
+function transformDQResults(
+  jobId: string,
+  dqResults: AccuZIPDQResults
+) {
+  const deliverable = parseInt(dqResults.dq_dpvhsa_y);
+  const missingSecondary = parseInt(dqResults.dq_dpvhsa_d);
+  const unconfirmedSecondary = parseInt(dqResults.dq_dpvhsa_s);
+  const undeliverable = parseInt(dqResults.dq_dpvhsa_n);
+  const vacant = parseInt(dqResults.dq_dpvhsv);
+  const total = parseInt(dqResults.total_records);
+
+  const problematic = missingSecondary + unconfirmedSecondary + undeliverable + vacant;
+
+  return {
+    id: jobId,
+    status: 'completed',
+    total_records: total,
+    processed_records: total,
+    deliverable_count: deliverable,
+    undeliverable_count: problematic,
+    results: {
+      summary: {
+        deliverable,
+        deliverable_percent: ((deliverable / total) * 100).toFixed(1),
+        problematic,
+        problematic_percent: ((problematic / total) * 100).toFixed(1)
+      },
+      breakdown: {
+        perfect: deliverable,
+        missing_secondary: missingSecondary,
+        unconfirmed_secondary: unconfirmedSecondary,
+        not_found: undeliverable,
+        vacant: vacant
+      },
+      raw_dq_results: dqResults
+    },
+    completed_at: new Date()
+  };
+}
+
+// Usage
+const jobUpdate = transformDQResults(validationJobId, accuzipDQResponse);
+await db.validation_jobs.update({
+  where: { id: validationJobId },
+  data: jobUpdate
+});
+```
+
+**Resulting validation_jobs Record:**
+```json
+{
+  "id": "job-uuid-5678",
+  "org_id": "org-uuid-1234",
+  "status": "completed",
+  "total_records": 2000,
+  "processed_records": 2000,
+  "deliverable_count": 1892,
+  "undeliverable_count": 139,
+  "results": {
+    "summary": {
+      "deliverable": 1892,
+      "deliverable_percent": "94.6",
+      "problematic": 139,
+      "problematic_percent": "7.0"
+    },
+    "breakdown": {
+      "perfect": 1892,
+      "missing_secondary": 11,
+      "unconfirmed_secondary": 70,
+      "not_found": 27,
+      "vacant": 31
+    },
+    "raw_dq_results": { }
+  },
+  "created_at": "2025-11-17T10:00:00Z",
+  "completed_at": "2025-11-17T10:15:00Z"
+}
+```
+
+### **19.3 Batch CSV Download → Bulk Contact Updates**
+
+After downloading the validated CSV from AccuZIP, bulk update contacts:
+
+```typescript
+// Parse AccuZIP validated CSV and update contacts
+async function processValidatedCSV(
+  jobId: string,
+  csvContent: string
+) {
+  const Papa = require('papaparse'); // CSV parser
+  const { data: rows } = Papa.parse(csvContent, { header: true });
+
+  // AccuZIP adds standardized fields to CSV
+  const updates = rows.map(row => ({
+    where: {
+      // Match by original data (assuming you included ID in upload)
+      email_hash: hashEmail(row.Email) // or use foreign_id
+    },
+    data: {
+      address_line1_validated: row['Delivery Address'],
+      address_line2_validated: row['Delivery Address 2'] || null,
+      city_validated: row['City Name'],
+      state_validated: row['State'],
+      postal_code_validated: row['ZIP'],
+      zip4: row['ZIP+4'] || null,
+      carrier_route: row['Carrier Route'],
+      delivery_point: row['Delivery Point'],
+      dpv_code: row['DPV Code'],
+      is_deliverable: row['DPV Code'] === 'Y',
+      validated_at: new Date(),
+      validation_job_id: jobId
+    }
+  }));
+
+  // Bulk update using transaction
+  await db.$transaction(
+    updates.map(update =>
+      db.contacts.update(update)
+    )
+  );
+
+  return { updated: updates.length };
+}
+```
+
+### **19.4 Error Response Handling**
+
+**AccuZIP Error Response:**
+```json
+{
+  "success": false,
+  "message": "Invalid API_KEY provided"
+}
+```
+
+**Transform to Validation Job Error:**
+```typescript
+function handleValidationError(
+  jobId: string,
+  errorResponse: { success: false; message: string }
+) {
+  return {
+    id: jobId,
+    status: 'failed',
+    error: {
+      message: errorResponse.message,
+      timestamp: new Date(),
+      provider: 'accuzip'
+    },
+    failed_at: new Date()
+  };
+}
+
+// Store error in database
+await db.validation_jobs.update({
+  where: { id: jobId },
+  data: handleValidationError(jobId, accuzipErrorResponse)
+});
+```
+
+### **19.5 Real-Time UI Updates via WebSocket**
+
+Transform AccuZIP webhook callback into WebSocket events:
+
+```typescript
+// Webhook handler
+app.get('/accuzip-callback', async (req, res) => {
+  const { guid } = req.query;
+
+  // Fetch final results from AccuZIP
+  const quoteResponse = await fetch(
+    `https://cloud2.iaccutrace.com/servoy-service/rest_ws/ws_360/v2_0/job/${guid}/QUOTE`
+  ).then(r => r.json());
+
+  // Find associated job
+  const job = await db.validation_jobs.findFirst({
+    where: { provider_job_id: guid }
+  });
+
+  if (job && quoteResponse.success) {
+    // Transform and update job
+    const jobUpdate = transformDQResults(job.id, quoteResponse);
+    await db.validation_jobs.update({
+      where: { id: job.id },
+      data: jobUpdate
+    });
+
+    // Emit WebSocket event to user
+    io.to(`org:${job.org_id}`).emit('validation:complete', {
+      jobId: job.id,
+      summary: jobUpdate.results.summary,
+      downloadUrl: `/api/validation/${job.id}/download`
+    });
+  }
+
+  res.status(200).send('OK');
+});
+```
+
+**Frontend WebSocket Handler:**
+```typescript
+// React component receiving validation updates
+useEffect(() => {
+  socket.on('validation:complete', (data) => {
+    toast.success(
+      `Validation complete: ${data.summary.deliverable} deliverable (${data.summary.deliverable_percent}%)`
+    );
+
+    // Update UI
+    setValidationJob(prev => ({
+      ...prev,
+      status: 'completed',
+      results: data.summary
+    }));
+
+    // Show download button
+    setDownloadUrl(data.downloadUrl);
+  });
+
+  return () => socket.off('validation:complete');
+}, []);
+```
+
+---
 
 ## **17\. Summary and Implementation Checklist**
 
