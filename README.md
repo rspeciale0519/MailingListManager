@@ -144,8 +144,15 @@ Before you begin, ensure you have the following installed:
 
 - **AWS Account** (for S3, KMS, deployment)
 - **Stripe Account** (for billing)
-- **AccuZip Account** (for address validation)
+- **AccuZip Account** (for address validation) - [Setup Guide](docs/API-AccuZip.md)
 - **GitHub Account** (for source control)
+
+**AccuZIP Account Setup:**
+1. Create account at [accuzip.com](https://www.accuzip.com)
+2. Obtain API key (GUID format)
+3. Verify access level (minimum: Level 2 for Direct Mail)
+4. Set `ACCUZIP_API_KEY` in `.env` file
+5. **Complete setup instructions:** [docs/API-AccuZip.md](docs/API-AccuZip.md)
 
 ---
 
