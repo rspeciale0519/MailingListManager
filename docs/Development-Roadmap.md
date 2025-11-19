@@ -1,4 +1,5 @@
 # Development Roadmap & Task List
+
 ## Mailing List Manager SaaS Platform
 
 **Version:** 1.0  
@@ -16,6 +17,7 @@
 This is a non-negotiable requirement for maintainability, testability, and team collaboration.
 
 **Rules:**
+
 1. ✅ **Maximum 450 LOC per file** (including comments, blank lines)
 2. ✅ **Extract functions/classes** when approaching limit
 3. ✅ **Create utility modules** for shared logic
@@ -24,6 +26,7 @@ This is a non-negotiable requirement for maintainability, testability, and team 
 6. ✅ **Separate concerns**: business logic, UI, API calls
 
 **Before Committing Code:**
+
 ```bash
 # Check file sizes (run from project root)
 find src -name "*.ts" -o -name "*.tsx" | xargs wc -l | awk '$1 > 450 {print "❌ EXCEEDS LIMIT:", $2, "has", $1, "lines"}'
@@ -31,6 +34,7 @@ find src -name "*.ts" -o -name "*.tsx" | xargs wc -l | awk '$1 <= 450 {count++} 
 ```
 
 **Example Refactoring:**
+
 ```typescript
 // ❌ BAD: 800-line monolithic component
 // components/ContactsTable.tsx (800 LOC)
@@ -48,6 +52,7 @@ find src -name "*.ts" -o -name "*.tsx" | xargs wc -l | awk '$1 <= 450 {count++} 
 ---
 
 ## Table of Contents
+
 1. [Project Setup & Infrastructure](#phase-0-project-setup--infrastructure)
 2. [Authentication & Authorization](#phase-1-authentication--authorization)
 3. [Core Data Management](#phase-2-core-data-management)
@@ -65,9 +70,9 @@ find src -name "*.ts" -o -name "*.tsx" | xargs wc -l | awk '$1 <= 450 {count++} 
 
 ### GitHub Repository Setup
 
-- [ ] **0.1 Create GitHub Repository**
-  - [ ] Initialize repository: `mailing-list-manager`
-  - [ ] Set repository visibility (private during development)
+- [x] **0.1 Create GitHub Repository**
+  - [x] Initialize repository: `mailing-list-manager`
+  - [x] Set repository visibility (private during development)
   - [ ] Add repository description and topics
   - [ ] Configure repository settings:
     - [ ] Require pull request reviews
@@ -99,7 +104,7 @@ find src -name "*.ts" -o -name "*.tsx" | xargs wc -l | awk '$1 <= 450 {count++} 
 
 - [ ] **0.3 Branch Strategy**
   - [ ] Create protected branches:
-    - [ ] `main` (production)
+    - [x] `main` (production)
     - [ ] `staging` (pre-production)
     - [ ] `develop` (active development)
   - [ ] Configure branch protection rules:
@@ -108,13 +113,13 @@ find src -name "*.ts" -o -name "*.tsx" | xargs wc -l | awk '$1 <= 450 {count++} 
     - [ ] Require linear history
   - [ ] Document branching workflow in README
 
-- [ ] **0.4 Git Hooks & Pre-commit**
-  - [ ] Install Husky for Git hooks
-  - [ ] Add pre-commit hook:
-    - [ ] Run linter (ESLint)
-    - [ ] Run formatter (Prettier)
-    - [ ] Check file size limits (450 LOC)
-    - [ ] Run type check (TypeScript)
+- [x] **0.4 Git Hooks & Pre-commit**
+  - [x] Install Husky for Git hooks
+  - [x] Add pre-commit hook:
+    - [x] Run linter (ESLint)
+    - [x] Run formatter (Prettier)
+    - [x] Check file size limits (450 LOC)
+    - [x] Run type check (TypeScript)
   - [ ] Add commit-msg hook:
     - [ ] Enforce conventional commits
   - [ ] Add pre-push hook:
@@ -148,66 +153,66 @@ find src -name "*.ts" -o -name "*.tsx" | xargs wc -l | awk '$1 <= 450 {count++} 
 
 ### Development Environment
 
-- [ ] **0.7 Initialize Monorepo Structure**
-  - [ ] **Git: Create feature branch** `git checkout -b setup/monorepo-structure`
-  - [ ] Create root `package.json` with workspaces
-  - [ ] Initialize frontend workspace: `apps/frontend`
-  - [ ] Initialize backend workspace: `apps/backend`
-  - [ ] Initialize shared workspace: `packages/shared`
-  - [ ] Configure TypeScript project references
-  - [ ] ⚠️ **Code Modularization Check**: Set up ESLint rule to warn on files >450 LOC
-  - [ ] **Git: Commit changes** `git add . && git commit -m "feat: initialize monorepo structure"`
-  - [ ] **Git: Push branch** `git push -u origin setup/monorepo-structure`
-  - [ ] **GitHub: Create PR** to `develop` branch with description
+- [x] **0.7 Initialize Monorepo Structure**
+  - [x] **Git: Create feature branch** `git checkout -b setup/monorepo-structure`
+  - [x] Create root `package.json` with workspaces
+  - [x] Initialize frontend workspace: `apps/frontend`
+  - [x] Initialize backend workspace: `apps/backend`
+  - [x] Initialize shared workspace: `packages/shared`
+  - [x] Configure TypeScript project references
+  - [x] ⚠️ **Code Modularization Check**: Set up ESLint rule to warn on files >450 LOC
+  - [x] **Git: Commit changes** `git add . && git commit -m "feat: initialize monorepo structure"`
+  - [x] **Git: Push branch** `git push -u origin setup/monorepo-structure`
+  - [x] **GitHub: Create PR** to `develop` branch with description
   - [ ] **GitHub: Request review** from team member
   - [ ] **GitHub: Address review comments** (if any)
   - [ ] **GitHub: Merge PR** to `develop` using squash merge
   - [ ] **Git: Delete feature branch** locally and remotely
   - [ ] **Git: Update local develop** `git checkout develop && git pull`
 
-- [ ] **0.8 Backend Setup (Node.js + TypeScript)**
-  - [ ] **Git: Create feature branch** `git checkout -b setup/backend-foundation`
-  - [ ] Initialize Node.js project
-  - [ ] Install dependencies:
-    - [ ] Fastify (web framework)
-    - [ ] Prisma (ORM)
-    - [ ] Zod (validation)
-    - [ ] BullMQ (job queue)
-    - [ ] Socket.io (WebSocket)
-  - [ ] Configure TypeScript (`tsconfig.json`)
-  - [ ] Set up folder structure (see Technical Architecture doc)
-  - [ ] Configure ESLint + Prettier
-  - [ ] ⚠️ **Create pre-commit script** to check file LOC limits
-  - [ ] **Git: Commit** `git commit -m "feat(backend): initialize Node.js backend with TypeScript"`
-  - [ ] **Git: Push** `git push -u origin setup/backend-foundation`
-  - [ ] **GitHub: Create PR** to `develop`
-  - [ ] **GitHub: Merge after approval**
-  - [ ] **Git: Cleanup** branches and sync develop
+- [x] **0.8 Backend Setup (Node.js + TypeScript)**
+  - [x] **Git: Create feature branch** `git checkout -b setup/backend-foundation`
+  - [x] Initialize Node.js project
+  - [x] Install dependencies:
+    - [x] Fastify (web framework)
+    - [x] Prisma (ORM)
+    - [x] Zod (validation)
+    - [x] BullMQ (job queue)
+    - [x] Socket.io (WebSocket)
+  - [x] Configure TypeScript (`tsconfig.json`)
+  - [x] Set up folder structure (see Technical Architecture doc)
+  - [x] Configure ESLint + Prettier
+  - [x] ⚠️ **Create pre-commit script** to check file LOC limits
+  - [x] **Git: Commit** `git commit -m "feat(backend): initialize Node.js backend with TypeScript"`
+  - [x] **Git: Push** `git push -u origin setup/backend-foundation`
+  - [x] **GitHub: Create PR** to `develop`
+  - [x] **GitHub: Merge after approval**
+  - [x] **Git: Cleanup** branches and sync develop
 
-- [ ] **0.9 Frontend Setup (React + Vite)**
-  - [ ] **Git: Create feature branch** `git checkout -b setup/frontend-foundation`
-  - [ ] Initialize Vite project with React + TypeScript
-  - [ ] Install dependencies:
-    - [ ] React Router v6
-    - [ ] Zustand (state management)
-    - [ ] React Query (server state)
-    - [ ] TailwindCSS + shadcn/ui
-    - [ ] TanStack Table
-    - [ ] React Hook Form + Zod
-  - [ ] Configure TypeScript
-  - [ ] Configure TailwindCSS
-  - [ ] Set up folder structure (see Frontend Component Structure doc)
-  - [ ] ⚠️ **Add file size linting** to prevent >450 LOC components
-  - [ ] **Git: Commit** `git commit -m "feat(frontend): initialize React app with Vite"`
-  - [ ] **Git: Push & Create PR** to `develop`
-  - [ ] **GitHub: Merge after approval**
+- [x] **0.9 Frontend Setup (React + Vite)**
+  - [x] **Git: Create feature branch** `git checkout -b setup/frontend-foundation`
+  - [x] Initialize Vite project with React + TypeScript
+  - [x] Install dependencies:
+    - [x] React Router v6
+    - [x] Zustand (state management)
+    - [x] React Query (server state)
+    - [x] TailwindCSS + shadcn/ui
+    - [x] TanStack Table
+    - [x] React Hook Form + Zod
+  - [x] Configure TypeScript
+  - [x] Configure TailwindCSS
+  - [x] Set up folder structure (see Frontend Component Structure doc)
+  - [x] ⚠️ **Add file size linting** to prevent >450 LOC components
+  - [x] **Git: Commit** `git commit -m "feat(frontend): initialize React app with Vite"`
+  - [x] **Git: Push & Create PR** to `develop`
+  - [x] **GitHub: Merge after approval**
 
-- [ ] **0.10 Database Setup (PostgreSQL)**
-  - [ ] Install PostgreSQL 15+
-  - [ ] Create development database
-  - [ ] Initialize Prisma schema
-  - [ ] Configure connection pooling
-  - [ ] Set up database migrations folder
+- [x] **0.10 Database Setup (PostgreSQL)**
+  - [x] Install PostgreSQL 15+
+  - [x] Create development database
+  - [x] Initialize Prisma schema
+  - [x] Configure connection pooling
+  - [x] Set up database migrations folder
   - [ ] Document database setup in README
 
 - [ ] **0.11 Redis Setup**
@@ -219,16 +224,16 @@ find src -name "*.ts" -o -name "*.tsx" | xargs wc -l | awk '$1 <= 450 {count++} 
     - [ ] Cache layer
   - [ ] Document Redis setup
 
-- [ ] **0.12 Environment Configuration**
-  - [ ] Create `.env.example` files for backend and frontend
-  - [ ] Set up environment variables:
-    - [ ] Database URLs
+- [x] **0.12 Environment Configuration**
+  - [x] Create `.env.example` files for backend and frontend
+  - [x] Set up environment variables:
+    - [x] Database URLs
     - [ ] Redis URLs
-    - [ ] JWT secrets
+    - [x] JWT secrets
     - [ ] AWS credentials (S3, KMS)
-    - [ ] API keys (Stripe, AccuZip, etc.)
-  - [ ] Configure dotenv loading
-  - [ ] Add `.env` to `.gitignore`
+    - [x] API keys (Stripe, AccuZip, etc.)
+  - [x] Configure dotenv loading
+  - [x] Add `.env` to `.gitignore`
 
 - [ ] **0.13 Docker Setup**
   - [ ] Create `Dockerfile` for backend
@@ -240,14 +245,14 @@ find src -name "*.ts" -o -name "*.tsx" | xargs wc -l | awk '$1 <= 450 {count++} 
     - [ ] Frontend service
   - [ ] Test Docker setup
 
-- [ ] **0.14 Development Scripts**
-  - [ ] Add npm scripts to root `package.json`:
-    - [ ] `dev`: Start all services
-    - [ ] `build`: Build all packages
+- [x] **0.14 Development Scripts**
+  - [x] Add npm scripts to root `package.json`:
+    - [x] `dev`: Start all services
+    - [x] `build`: Build all packages
     - [ ] `test`: Run all tests
-    - [ ] `lint`: Lint all packages
-    - [ ] `format`: Format all code
-    - [ ] `check-file-sizes`: Verify 450 LOC limit
+    - [x] `lint`: Lint all packages
+    - [x] `format`: Format all code
+    - [x] `check-file-sizes`: Verify 450 LOC limit
   - [ ] Document scripts in README
 
 ### CI/CD Pipeline
@@ -311,6 +316,7 @@ find src -name "*.ts" -o -name "*.tsx" | xargs wc -l | awk '$1 <= 450 {count++} 
   - [ ] Host docs on GitHub Pages or separate site
 
 **Phase 0 Checkpoint:**
+
 - ✅ GitHub repo configured with proper branch protection
 - ✅ Development environment running locally via Docker
 - ✅ CI/CD pipeline functional
@@ -393,34 +399,41 @@ git push origin feature/auth-login-endpoint --force-with-lease  # if rebased
 ```
 
 **GitHub PR Template:**
+
 ```markdown
 ## Description
+
 Brief description of what this PR does.
 
 Closes #[issue-number]
 
 ## Type of Change
+
 - [ ] New feature
 - [ ] Bug fix
 - [ ] Refactoring
 - [ ] Documentation update
 
 ## Changes Made
+
 - Added login endpoint at POST /auth/login
 - Created JWT token generation utility
 - Added unit tests for auth service
 - **Verified all files <450 LOC**
 
 ## Testing
+
 - [ ] Unit tests pass
 - [ ] Integration tests pass
 - [ ] Manual testing completed
 - [ ] File size limits verified
 
 ## Screenshots (if UI changes)
+
 [Add screenshots]
 
 ## Checklist
+
 - [ ] Code follows style guidelines (ESLint passed)
 - [ ] Self-reviewed code
 - [ ] **No file exceeds 450 LOC**
@@ -433,6 +446,7 @@ Closes #[issue-number]
 ### 4. Code Review Process
 
 **For Reviewers:**
+
 - [ ] Check that all files are under 450 LOC
 - [ ] Verify code follows project conventions
 - [ ] Check test coverage
@@ -441,6 +455,7 @@ Closes #[issue-number]
 - [ ] Request changes or approve
 
 **For Author:**
+
 - [ ] Address all review comments
 - [ ] Make requested changes in new commits
 - [ ] Push updates: `git push origin feature/auth-login-endpoint`
@@ -658,6 +673,7 @@ gh issue list
 ## Daily Development Workflow Example
 
 **Morning:**
+
 ```bash
 # Sync with team changes
 git checkout develop
@@ -671,6 +687,7 @@ git checkout -b feature/contacts-inline-edit
 ```
 
 **During Day:**
+
 ```bash
 # Regular commits as you work
 git add .
@@ -683,6 +700,7 @@ git push origin feature/contacts-inline-edit
 ```
 
 **Before Lunch/End of Day:**
+
 ```bash
 # Push latest work
 git push origin feature/contacts-inline-edit
@@ -692,6 +710,7 @@ gh pr create --draft
 ```
 
 **When Feature Complete:**
+
 ```bash
 # Final checks
 npm run lint
@@ -708,6 +727,7 @@ gh pr ready  # Mark draft PR as ready for review
 ```
 
 **After PR Approved:**
+
 ```bash
 # GitHub merges via UI (squash)
 # Sync locally
@@ -906,6 +926,7 @@ git branch -d feature/contacts-inline-edit
   - [ ] Add validation
 
 **Phase 1 Checkpoint:**
+
 - ✅ Users can register and login
 - ✅ JWT authentication working
 - ✅ MFA optional setup available
@@ -1102,6 +1123,7 @@ git branch -d feature/contacts-inline-edit
   - [ ] Add confirmation dialogs
 
 **Phase 2 Checkpoint:**
+
 - ✅ Multi-tenant org system working
 - ✅ Permission system enforcing access control
 - ✅ Lists and contacts CRUD complete
@@ -1223,6 +1245,7 @@ git branch -d feature/contacts-inline-edit
   - [ ] Link to created contacts
 
 **Phase 3 Checkpoint:**
+
 - ✅ Users can upload CSV/XLSX files
 - ✅ Smart column mapping works accurately
 - ✅ Validation catches errors
@@ -1308,6 +1331,7 @@ git branch -d feature/contacts-inline-edit
   - [ ] Review exceptions manually
 
 **Phase 4 Checkpoint:**
+
 - ✅ Deduplication detects duplicates accurately
 - ✅ Users can review clusters manually
 - ✅ Survivor selection works
@@ -1449,6 +1473,7 @@ git branch -d feature/contacts-inline-edit
   - [ ] Show progress
 
 **Phase 5 Checkpoint:**
+
 - ✅ Users can export contacts in multiple formats
 - ✅ Address validation via AccuZip working
 - ✅ Skip trace enrichment operational
@@ -1588,6 +1613,7 @@ git branch -d feature/contacts-inline-edit
   - [ ] Preview effective permissions
 
 **Phase 6 Checkpoint:**
+
 - ✅ Segments working with dynamic filters
 - ✅ Custom fields can be added on-the-fly
 - ✅ Audit log tracking all changes
@@ -1684,6 +1710,7 @@ git branch -d feature/contacts-inline-edit
   - [ ] Re-test fixes
 
 **Phase 7 Checkpoint:**
+
 - ✅ 80%+ backend test coverage
 - ✅ 70%+ frontend test coverage
 - ✅ All critical paths covered by E2E tests
@@ -1810,6 +1837,7 @@ git branch -d feature/contacts-inline-edit
   - [ ] Create runbooks for common incidents
 
 **Phase 8 Checkpoint:**
+
 - ✅ Infrastructure fully provisioned
 - ✅ Monitoring and logging operational
 - ✅ Staging environment deployed and tested
@@ -1885,6 +1913,7 @@ git branch -d feature/contacts-inline-edit
   - [ ] Scale infrastructure as needed
 
 **Phase 9 Checkpoint:**
+
 - ✅ Application launched publicly
 - ✅ Monitoring active and healthy
 - ✅ User feedback loop established
@@ -1899,7 +1928,8 @@ For each task in this roadmap, create a GitHub issue using this template:
 ```markdown
 **Title:** [Phase X.Y] Task Name
 
-**Labels:** 
+**Labels:**
+
 - phase-X
 - type:feature (or type:bug, type:refactor)
 - priority:medium (or high/low)
@@ -1908,17 +1938,20 @@ For each task in this roadmap, create a GitHub issue using this template:
 Brief description of the task.
 
 **Acceptance Criteria:**
+
 - [ ] Criterion 1
 - [ ] Criterion 2
 - [ ] **Code <450 LOC verified**
 
 **Related Tasks:**
+
 - Depends on: #issue-number
 - Blocks: #issue-number
 
 **Estimated Time:** X hours/days
 
 **Technical Notes:**
+
 - Any specific implementation details
 - File size considerations
 - Modularization approach if approaching 450 LOC
@@ -1967,6 +2000,7 @@ Before creating a PR:
 ## Final Notes
 
 **Development Timeline Estimate:**
+
 - Phase 0: 1 week
 - Phase 1: 2 weeks
 - Phase 2: 3 weeks
@@ -1981,6 +2015,7 @@ Before creating a PR:
 **Total:** ~17 weeks (4+ months) for 1-2 developers
 
 **Critical Success Factors:**
+
 1. ✅ **Strict adherence to 450 LOC limit**
 2. ✅ Comprehensive testing at each phase
 3. ✅ Regular code reviews
@@ -1988,6 +2023,7 @@ Before creating a PR:
 5. ✅ User feedback early and often
 
 **Modularization Examples to Reference:**
+
 - See `02-Technical-Architecture.md` for service splitting patterns
 - See `05-Frontend-Component-Structure.md` for component splitting
 - Use composition over inheritance
