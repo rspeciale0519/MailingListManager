@@ -47,6 +47,7 @@ The **Mailing List Manager** is a multi-tenant SaaS application that helps busin
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **Framework**: React 18+ with TypeScript
 - **Build Tool**: Vite
 - **State Management**: Zustand (global state) + React Query (server state)
@@ -57,6 +58,7 @@ The **Mailing List Manager** is a multi-tenant SaaS application that helps busin
 - **Routing**: React Router v6
 
 ### Backend
+
 - **Runtime**: Node.js 20+ with TypeScript
 - **Framework**: Fastify (high-performance REST API)
 - **Database**: PostgreSQL 15+ (with Row-Level Security)
@@ -66,6 +68,7 @@ The **Mailing List Manager** is a multi-tenant SaaS application that helps busin
 - **Validation**: Zod
 
 ### Infrastructure
+
 - **Cache/Queue**: Redis 7+
 - **Object Storage**: AWS S3 (or compatible)
 - **Encryption**: AWS KMS
@@ -74,6 +77,7 @@ The **Mailing List Manager** is a multi-tenant SaaS application that helps busin
 - **CI/CD**: GitHub Actions
 
 ### Monitoring & Observability
+
 - **Logs**: Structured JSON logging
 - **Metrics**: Prometheus + Grafana
 - **Tracing**: OpenTelemetry + Jaeger
@@ -148,6 +152,7 @@ Before you begin, ensure you have the following installed:
 - **GitHub Account** (for source control)
 
 **AccuZIP Account Setup:**
+
 1. Create account at [accuzip.com](https://www.accuzip.com)
 2. Obtain API key (GUID format)
 3. Verify access level (minimum: Level 2 for Direct Mail)
@@ -190,6 +195,7 @@ cp apps/frontend/.env.example apps/frontend/.env
 Edit `.env` files with your configuration:
 
 **Backend** (`apps/backend/.env`):
+
 ```env
 # Database
 DATABASE_URL=postgresql://user:password@localhost:5432/mailing_list_dev
@@ -222,6 +228,7 @@ NODE_ENV=development
 ```
 
 **Frontend** (`apps/frontend/.env`):
+
 ```env
 VITE_API_URL=http://localhost:3000/v1
 VITE_WS_URL=http://localhost:3000
@@ -240,6 +247,7 @@ docker-compose ps
 ```
 
 Or install locally:
+
 - [PostgreSQL Installation](https://www.postgresql.org/download/)
 - [Redis Installation](https://redis.io/download)
 
@@ -268,11 +276,13 @@ npm run dev:workers   # Background workers
 ### 7. Verify Installation
 
 Open your browser and navigate to:
+
 - **Frontend**: http://localhost:5173
 - **Backend API**: http://localhost:3000/health
 - **API Docs**: http://localhost:3000/docs (Swagger UI)
 
 **Default test account:**
+
 - Email: `admin@example.com`
 - Password: `password123`
 
@@ -291,6 +301,7 @@ We use **Git Flow** with three main branches:
 ### Feature Development Workflow
 
 1. **Create Feature Branch**
+
    ```bash
    git checkout develop
    git pull origin develop
@@ -298,6 +309,7 @@ We use **Git Flow** with three main branches:
    ```
 
 2. **Make Changes**
+
    ```bash
    # Make your changes
    npm run lint      # Check code style
@@ -306,6 +318,7 @@ We use **Git Flow** with three main branches:
    ```
 
 3. **Commit Changes**
+
    ```bash
    git add .
    git commit -m "feat(scope): description of change"
@@ -320,9 +333,10 @@ We use **Git Flow** with three main branches:
    - `chore:` - Maintenance tasks
 
 4. **Push & Create PR**
+
    ```bash
    git push origin feature/your-feature-name
-   
+
    # Create pull request (via GitHub CLI)
    gh pr create --title "feat: your feature name" --body "Description"
    ```
@@ -343,12 +357,14 @@ See [06-Development-Roadmap.md](./06-Development-Roadmap.md) for comprehensive G
 **⚠️ NO FILE SHALL EXCEED 450 LINES OF CODE**
 
 This is a **non-negotiable** requirement for:
+
 - Maintainability
 - Testability
 - Code review efficiency
 - Team collaboration
 
 **Enforcement:**
+
 ```bash
 # Check file sizes before every commit
 npm run check-file-sizes
@@ -360,6 +376,7 @@ git commit  # Automatically checks file sizes
 **How to Split Large Files:**
 
 ✅ **Good Example:**
+
 ```typescript
 // ❌ BAD: 800 LOC monolithic file
 // services/contact.service.ts (800 LOC)
@@ -434,6 +451,7 @@ npm run test:coverage
 ### Writing Tests
 
 **Unit Test Example:**
+
 ```typescript
 // formatters/email.formatter.test.ts
 import { formatEmail } from './email.formatter';
@@ -454,6 +472,7 @@ describe('formatEmail', () => {
 ```
 
 **Integration Test Example:**
+
 ```typescript
 // auth.test.ts
 import request from 'supertest';
@@ -500,6 +519,7 @@ npm run test:e2e:report
 ### Deployment Process
 
 1. **Deploy to Staging**
+
    ```bash
    git checkout staging
    git merge develop
@@ -508,11 +528,13 @@ npm run test:e2e:report
    ```
 
 2. **Run Smoke Tests**
+
    ```bash
    npm run test:smoke:staging
    ```
 
 3. **Deploy to Production**
+
    ```bash
    git checkout main
    git merge staging
@@ -602,12 +624,14 @@ Comprehensive documentation is available in the `/docs` folder:
 We welcome contributions! Please follow these steps:
 
 1. **Fork the Repository**
+
    ```bash
    # Click "Fork" on GitHub
    git clone https://github.com/your-username/mailing-list-manager.git
    ```
 
 2. **Create Feature Branch**
+
    ```bash
    git checkout -b feature/your-contribution
    ```
@@ -618,6 +642,7 @@ We welcome contributions! Please follow these steps:
    - Update documentation
 
 4. **Run Quality Checks**
+
    ```bash
    npm run lint
    npm run type-check
@@ -626,6 +651,7 @@ We welcome contributions! Please follow these steps:
    ```
 
 5. **Commit & Push**
+
    ```bash
    git commit -m "feat: your contribution description"
    git push origin feature/your-contribution
@@ -681,8 +707,25 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines.
 
 ### Roadmap
 
-- ✅ Phase 0: Infrastructure Setup (Complete)
-- 🚧 Phase 1: Authentication & Authorization (In Progress)
+- ✅ Phase 0: Infrastructure Setup (**Complete**)
+  - ✅ Monorepo structure
+  - ✅ Backend & frontend scaffolding
+  - ✅ Database setup (Supabase PostgreSQL)
+  - ✅ GitHub repository structure
+  - ✅ Branch strategy (main, staging, develop)
+  - ✅ Docker & docker-compose setup
+  - ✅ GitHub Actions CI/CD workflows
+  - ✅ Dependabot configuration
+  - ✅ Code quality tools (ESLint, Prettier, file size checks)
+- 🚧 Phase 1: Authentication & Authorization (**In Progress**)
+  - ✅ User registration endpoint
+  - ✅ Login endpoint with JWT
+  - ✅ Refresh token endpoint
+  - ✅ Logout endpoint
+  - ⏳ Authentication middleware
+  - ⏳ Frontend auth UI
+  - ⏳ MFA setup
+  - ⏳ OAuth integration
 - ⏳ Phase 2: Core Data Management (Planned)
 - ⏳ Phase 3: Import Pipeline (Planned)
 - ⏳ Phase 4: Deduplication System (Planned)
