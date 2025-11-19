@@ -1,0 +1,194 @@
+// Prisma schema for Mailing List Manager
+// Database: PostgreSQL (via Supabase)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// Phase 1: Authentication & Authorization
+// ==========================================
+
+model User {
+  id               String    @id @default(uuid())
+  email            String    @unique
+  password_hash    String?   // Nullable for OAuth users
+  first_name       String?
+  last_name        String?
+  avatar_url       String?
+  email_verified   Boolean   @default(false)
+  mfa_enabled      Boolean   @default(false)
+  mfa_secret       String?
+  oauth_provider   String?   // 'google', 'microsoft', null
+  oauth_id         String?   // Provider's user ID
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+  last_login_at    DateTime?
+
+  // Relations
+  refresh_tokens   RefreshToken[]
+  org_memberships  OrgMembership[]
+
+  @@index([email])
+  @@index([oauth_provider, oauth_id])
+  @@map("users")
+}
+
+model RefreshToken {
+  id            String   @id @default(uuid())
+  user_id       String
+  token         String   @unique
+  expires_at    DateTime
+  created_at    DateTime @default(now())
+  revoked       Boolean  @default(false)
+  revoked_at    DateTime?
+
+  // Relations
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@index([token])
+  @@map("refresh_tokens")
+}
+
+// ==========================================
+// Phase 2: Multi-Tenancy & Organizations
+// ==========================================
+
+model Organization {
+  id              String    @id @default(uuid())
+  name            String
+  slug            String    @unique
+  settings        Json?     // Org-level settings
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  // Relations
+  memberships     OrgMembership[]
+  lists           List[]
+
+  @@map("orgs")
+}
+
+model OrgMembership {
+  id              String   @id @default(uuid())
+  org_id          String
+  user_id         String
+  role            String   // 'owner', 'admin', 'editor', 'viewer'
+  permissions     Json     // Detailed permissions object
+  joined_at       DateTime @default(now())
+
+  // Relations
+  org             Organization @relation(fields: [org_id], references: [id], onDelete: Cascade)
+  user            User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([org_id, user_id])
+  @@index([user_id])
+  @@index([org_id])
+  @@map("org_memberships")
+}
+
+// ==========================================
+// Phase 2: Lists & Contacts
+// ==========================================
+
+model List {
+  id              String    @id @default(uuid())
+  org_id          String
+  name            String
+  description     String?
+  contact_count   Int       @default(0)
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  // Relations
+  org             Organization @relation(fields: [org_id], references: [id], onDelete: Cascade)
+  contacts        Contact[]
+
+  @@index([org_id])
+  @@map("lists")
+}
+
+model Contact {
+  id                  String    @id @default(uuid())
+  list_id             String
+  org_id              String    // For RLS
+
+  // Personal Info (encrypted)
+  first_name          String?
+  last_name           String?
+  email               String?
+  email_hash          String?   // For dedup
+  phone               String?
+  phone_hash          String?   // For dedup
+
+  // Address (encrypted)
+  address_line1       String?
+  address_line2       String?
+  city                String?
+  state               String?
+  zip                 String?
+  country             String?   @default("US")
+
+  // Business Info
+  company             String?
+  job_title           String?
+
+  // Metadata
+  tags                String[]  // Array of tag strings
+  custom_fields       Json?     // Dynamic fields
+  source              String?   // Import source
+  validation_status   String?   // 'valid', 'invalid', 'pending'
+  validation_data     Json?     // AccuZIP results
+
+  created_at          DateTime  @default(now())
+  updated_at          DateTime  @updatedAt
+
+  // Relations
+  list                List      @relation(fields: [list_id], references: [id], onDelete: Cascade)
+
+  @@index([list_id])
+  @@index([org_id])
+  @@index([email_hash])
+  @@index([phone_hash])
+  @@map("contacts")
+}
+
+// ==========================================
+// Phase 3: Import Pipeline
+// ==========================================
+
+model Import {
+  id              String    @id @default(uuid())
+  org_id          String
+  user_id         String
+  list_id         String?
+
+  filename        String
+  file_url        String    // S3 URL
+  status          String    // 'uploading', 'parsing', 'mapping', 'validating', 'committing', 'complete', 'failed', 'cancelled'
+  stage           String    // Current stage
+
+  total_rows      Int       @default(0)
+  valid_rows      Int       @default(0)
+  invalid_rows    Int       @default(0)
+
+  column_mapping  Json?     // Mapping configuration
+  options         Json?     // Import options
+
+  error_message   String?
+
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+  completed_at    DateTime?
+
+  @@index([org_id])
+  @@index([user_id])
+  @@index([status])
+  @@map("imports")
+}
