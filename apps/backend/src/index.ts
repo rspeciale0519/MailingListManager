@@ -5,6 +5,7 @@ import swaggerUI from '@fastify/swagger-ui';
 import 'dotenv/config';
 import { healthRoutes } from './routes/health.js';
 import { authRoutes } from './routes/auth.js';
+import { userRoutes } from './routes/user.js';
 
 const PORT = parseInt(process.env.PORT || '3001', 10);
 const HOST = process.env.HOST || '0.0.0.0';
@@ -42,6 +43,7 @@ await server.register(swagger, {
     tags: [
       { name: 'Health', description: 'Health check endpoints' },
       { name: 'Authentication', description: 'User authentication and authorization' },
+      { name: 'User', description: 'User profile and account management' },
       { name: 'Contacts', description: 'Contact management' },
       { name: 'Lists', description: 'List management' },
       { name: 'Import', description: 'Data import operations' },
@@ -82,6 +84,7 @@ await server.register(cors, {
 // Register routes
 await server.register(healthRoutes, { prefix: '/api' });
 await server.register(authRoutes, { prefix: '/api' });
+await server.register(userRoutes, { prefix: '/api' });
 
 // Global error handler
 server.setErrorHandler((error, request, reply) => {
