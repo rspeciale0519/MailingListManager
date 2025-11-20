@@ -943,10 +943,10 @@ git branch -d feature/contacts-inline-edit
   - [ ] Update password
   - [ ] Write tests
 
-- [ ] **1.19 Password Reset Frontend**
-  - [ ] Create `ResetPasswordPage.tsx` (<150 LOC)
-  - [ ] Create reset password form
-  - [ ] Add validation
+- [x] **1.19 Password Reset Frontend** ✅
+  - [x] Create `ResetPasswordPage.tsx` (146 LOC)
+  - [x] Create reset password form with validation
+  - [x] Integrate with `/auth/reset-password` endpoint
 
 **Phase 1A Checkpoint: Core Authentication (COMPLETE ✅)**
 
