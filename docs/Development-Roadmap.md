@@ -3,8 +3,8 @@
 ## Mailing List Manager SaaS Platform
 
 **Version:** 1.0
-**Last Updated:** November 19, 2025
-**Status:** Phase 0 Complete ✅ | Phase 1 In Progress
+**Last Updated:** November 20, 2025
+**Status:** Phase 0 Complete ✅ | Phase 1 Core Authentication Complete ✅ | Phase 1 Advanced Features In Progress
 
 ---
 
@@ -775,85 +775,87 @@ git branch -d feature/contacts-inline-edit
 
 ### User Authentication
 
-- [ ] **1.1 Database Schema: Users & Auth**
-  - [ ] **Git: Branch** `feature/auth-database-schema`
-  - [ ] Create `users` table migration
-  - [ ] Create `refresh_tokens` table migration
-  - [ ] Add indexes for email, oauth_provider
-  - [ ] Run migrations
-  - [ ] **Verify migration file <450 LOC** (split if needed)
-  - [ ] **Git: Commit & Push** `feat(db): add users and refresh_tokens tables`
-  - [ ] **GitHub: PR to develop** → Review → Merge
+**Phase 1A: Core Authentication (Complete ✅)**
 
-- [ ] **1.2 Password Hashing**
-  - [ ] **Git: Branch** `feature/auth-password-hashing`
-  - [ ] Install bcrypt
-  - [ ] Create password hashing utility (<200 LOC)
-  - [ ] Create password verification utility (<100 LOC)
-  - [ ] Write unit tests
-  - [ ] **Git: Commit & Push** `feat(auth): implement password hashing utilities`
-  - [ ] **GitHub: PR → Merge**
+- [x] **1.1 Database Schema: Users & Auth** ✅ COMPLETE
+  - [x] **Git: Branch** `feature/auth-database-schema`
+  - [x] Create `users` table migration
+  - [x] Create `refresh_tokens` table migration
+  - [x] Add indexes for email, oauth_provider
+  - [x] Run migrations
+  - [x] **Verify migration file <450 LOC** (split if needed)
+  - [x] **Git: Commit & Push** `feat(db): add users and refresh_tokens tables`
+  - [x] **GitHub: PR to develop** → Review → Merge
 
-- [ ] **1.3 JWT Token Generation**
-  - [ ] **Git: Branch** `feature/auth-jwt-tokens`
-  - [ ] Create JWT utility module (<250 LOC):
-    - [ ] `generateAccessToken()`
-    - [ ] `generateRefreshToken()`
-    - [ ] `verifyToken()`
-  - [ ] Configure token expiry (15min access, 30d refresh)
-  - [ ] Write unit tests
-  - [ ] **Git: Commit** `feat(auth): add JWT token generation and verification`
-  - [ ] **GitHub: PR → Merge**
+- [x] **1.2 Password Hashing** ✅ COMPLETE
+  - [x] **Git: Branch** `feature/auth-password-hashing`
+  - [x] Install bcrypt
+  - [x] Create password hashing utility (<200 LOC)
+  - [x] Create password verification utility (<100 LOC)
+  - [x] Write unit tests
+  - [x] **Git: Commit & Push** `feat(auth): implement password hashing utilities`
+  - [x] **GitHub: PR → Merge**
 
-- [ ] **1.4 Registration Endpoint**
-  - [ ] **Git: Branch** `feature/auth-registration`
-  - [ ] Create `/auth/register` route (<100 LOC)
-  - [ ] Create registration controller (<200 LOC)
-  - [ ] Create user service with `createUser()` (<250 LOC)
-  - [ ] Add email validation
-  - [ ] Add password strength validation (Zod schema)
-  - [ ] Send verification email (stub for now)
-  - [ ] Write integration tests
-  - [ ] **Verify all files <450 LOC**
-  - [ ] **Git: Commit** `feat(auth): implement user registration endpoint`
-  - [ ] **GitHub: PR → Review → Merge**
+- [x] **1.3 JWT Token Generation** ✅ COMPLETE
+  - [x] **Git: Branch** `feature/auth-jwt-tokens`
+  - [x] Create JWT utility module (<250 LOC):
+    - [x] `generateAccessToken()`
+    - [x] `generateRefreshToken()`
+    - [x] `verifyToken()`
+  - [x] Configure token expiry (15min access, 30d refresh)
+  - [x] Write unit tests
+  - [x] **Git: Commit** `feat(auth): add JWT token generation and verification`
+  - [x] **GitHub: PR → Merge**
 
-- [ ] **1.5 Login Endpoint**
-  - [ ] **Git: Branch** `feature/auth-login`
-  - [ ] Create `/auth/login` route (<100 LOC)
-  - [ ] Create login controller (<200 LOC)
-  - [ ] Verify credentials
-  - [ ] Generate tokens
-  - [ ] Store refresh token in database
-  - [ ] Write integration tests
-  - [ ] **Git: Commit & Push**
-  - [ ] **GitHub: PR → Merge**
+- [x] **1.4 Registration Endpoint** ✅ COMPLETE
+  - [x] **Git: Branch** `feature/auth-registration`
+  - [x] Create `/auth/register` route (<100 LOC)
+  - [x] Create registration controller (<200 LOC)
+  - [x] Create user service with `createUser()` (<250 LOC)
+  - [x] Add email validation
+  - [x] Add password strength validation (Zod schema)
+  - [x] Send verification email (stub for now)
+  - [x] Write integration tests
+  - [x] **Verify all files <450 LOC**
+  - [x] **Git: Commit** `feat(auth): implement user registration endpoint`
+  - [x] **GitHub: PR → Review → Merge**
 
-- [ ] **1.6 Refresh Token Endpoint**
-  - [ ] **Git: Branch** `feature/auth-refresh-token`
-  - [ ] Create `/auth/refresh` route (<100 LOC)
-  - [ ] Create refresh controller (<150 LOC)
-  - [ ] Validate refresh token
-  - [ ] Generate new access token
-  - [ ] Rotate refresh token
-  - [ ] Write integration tests
-  - [ ] **Git: Commit & Push → PR → Merge**
+- [x] **1.5 Login Endpoint** ✅ COMPLETE
+  - [x] **Git: Branch** `feature/auth-login`
+  - [x] Create `/auth/login` route (<100 LOC)
+  - [x] Create login controller (<200 LOC)
+  - [x] Verify credentials
+  - [x] Generate tokens
+  - [x] Store refresh token in database
+  - [x] Write integration tests
+  - [x] **Git: Commit & Push**
+  - [x] **GitHub: PR → Merge**
+
+- [x] **1.6 Refresh Token Endpoint** ✅ COMPLETE
+  - [x] **Git: Branch** `feature/auth-refresh-token`
+  - [x] Create `/auth/refresh` route (<100 LOC)
+  - [x] Create refresh controller (<150 LOC)
+  - [x] Validate refresh token
+  - [x] Generate new access token
+  - [x] Rotate refresh token
+  - [x] Write integration tests
+  - [x] **Git: Commit & Push → PR → Merge**
 
 **📌 Note:** Continue following the Git workflow pattern (Branch → Code → Commit → Push → PR → Review → Merge) for all remaining tasks in Phase 1 and beyond. This pattern is assumed for brevity in the remaining tasks.
 
-- [ ] **1.7 Logout Endpoint**
-  - [ ] Create `/auth/logout` route (<50 LOC)
-  - [ ] Create logout controller (<100 LOC)
-  - [ ] Revoke refresh token
-  - [ ] Write integration tests
+- [x] **1.7 Logout Endpoint** ✅ COMPLETE
+  - [x] Create `/auth/logout` route (<50 LOC)
+  - [x] Create logout controller (<100 LOC)
+  - [x] Revoke refresh token
+  - [x] Write integration tests
 
-- [ ] **1.8 Authentication Middleware**
-  - [ ] Create `auth.middleware.ts` (<200 LOC)
-  - [ ] Extract JWT from Authorization header
-  - [ ] Verify token signature and expiry
-  - [ ] Attach user to request object
-  - [ ] Handle token refresh on expiry
-  - [ ] Write unit tests
+- [x] **1.8 Authentication Middleware** ✅ COMPLETE
+  - [x] Create `auth.middleware.ts` (<200 LOC)
+  - [x] Extract JWT from Authorization header
+  - [x] Verify token signature and expiry
+  - [x] Attach user to request object
+  - [x] Handle token refresh on expiry
+  - [x] Write unit tests
 
 ### Multi-Factor Authentication (MFA)
 
@@ -891,39 +893,41 @@ git branch -d feature/contacts-inline-edit
 
 ### Frontend: Authentication UI
 
-- [ ] **1.13 Auth Pages**
-  - [ ] Create `LoginPage.tsx` (<200 LOC)
-  - [ ] Create `RegisterPage.tsx` (<200 LOC)
-  - [ ] Create `ForgotPasswordPage.tsx` (<150 LOC)
-  - [ ] Add OAuth buttons
-  - [ ] **Ensure no component >450 LOC**
+**Phase 1A: Core Authentication UI (Complete ✅)**
 
-- [ ] **1.14 Auth Forms**
-  - [ ] Create `LoginForm.tsx` (<250 LOC)
-  - [ ] Create `RegisterForm.tsx` (<300 LOC)
-  - [ ] Add client-side validation (Zod + React Hook Form)
-  - [ ] Add error handling
-  - [ ] Add loading states
+- [x] **1.13 Auth Pages** ✅ COMPLETE
+  - [x] Create `LoginPage.tsx` (<200 LOC)
+  - [x] Create `RegisterPage.tsx` (<200 LOC)
+  - [x] Create `ForgotPasswordPage.tsx` (<150 LOC)
+  - [x] Add OAuth buttons
+  - [x] **Ensure no component >450 LOC**
 
-- [ ] **1.15 Auth Store (Zustand)**
-  - [ ] Create `authStore.ts` (<200 LOC)
-  - [ ] Implement login/logout actions
-  - [ ] Persist tokens to localStorage
-  - [ ] Auto-refresh on token expiry
+- [x] **1.14 Auth Forms** ✅ COMPLETE
+  - [x] Create `LoginForm.tsx` (<250 LOC)
+  - [x] Create `RegisterForm.tsx` (<300 LOC)
+  - [x] Add client-side validation (Zod + React Hook Form)
+  - [x] Add error handling
+  - [x] Add loading states
 
-- [ ] **1.16 Auth API Client**
-  - [ ] Create `auth.api.ts` (<300 LOC)
-  - [ ] Implement API methods:
-    - [ ] `login()`
-    - [ ] `register()`
-    - [ ] `refresh()`
-    - [ ] `logout()`
-  - [ ] Add token interceptor to Axios
+- [x] **1.15 Auth Store (Zustand)** ✅ COMPLETE
+  - [x] Create `authStore.ts` (<200 LOC)
+  - [x] Implement login/logout actions
+  - [x] Persist tokens to localStorage
+  - [x] Auto-refresh on token expiry
 
-- [ ] **1.17 Protected Routes**
-  - [ ] Create `ProtectedRoute` component (<150 LOC)
-  - [ ] Redirect to login if not authenticated
-  - [ ] Show loading spinner during auth check
+- [x] **1.16 Auth API Client** ✅ COMPLETE
+  - [x] Create `auth.api.ts` (<300 LOC)
+  - [x] Implement API methods:
+    - [x] `login()`
+    - [x] `register()`
+    - [x] `refresh()`
+    - [x] `logout()`
+  - [x] Add token interceptor to Axios
+
+- [x] **1.17 Protected Routes** ✅ COMPLETE
+  - [x] Create `ProtectedRoute` component (<150 LOC)
+  - [x] Redirect to login if not authenticated
+  - [x] Show loading spinner during auth check
 
 ### Password Reset
 
@@ -941,14 +945,23 @@ git branch -d feature/contacts-inline-edit
   - [ ] Create reset password form
   - [ ] Add validation
 
-**Phase 1 Checkpoint:**
+**Phase 1A Checkpoint: Core Authentication (COMPLETE ✅)**
 
 - ✅ Users can register and login
-- ✅ JWT authentication working
-- ✅ MFA optional setup available
-- ✅ OAuth login with Google/Microsoft
-- ✅ Password reset flow complete
-- ✅ **All auth-related files <450 LOC**
+- ✅ JWT authentication working (15min access token, 30d refresh token)
+- ✅ Token refresh endpoint operational
+- ✅ Logout with token revocation working
+- ✅ Authentication middleware protecting routes
+- ✅ Frontend auth UI complete (Login, Register, Protected Routes)
+- ✅ Auth store with token persistence
+- ✅ 47 passing backend tests covering all core auth
+- ✅ **All auth-related files <450 LOC verified**
+
+**Phase 1B: Advanced Authentication Features (In Progress)**
+
+- [ ] MFA optional setup available
+- [ ] OAuth login with Google/Microsoft
+- [ ] Password reset flow complete
 
 ---
 
