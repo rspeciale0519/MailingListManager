@@ -270,3 +270,116 @@ export async function getUserById(userId: string) {
     lastLoginAt: user.last_login_at,
   };
 }
+
+/**
+ * Request password reset - generates token and sends email
+ */
+export async function requestPasswordReset(email: string) {
+  // Find user by email
+  const { data: users } = await supabase
+    .from('users')
+    .select('id, email, first_name')
+    .eq('email', email.toLowerCase())
+    .limit(1);
+
+  // Always return success to prevent email enumeration attacks
+  if (!users || users.length === 0) {
+    return { success: true, message: 'If an account exists, a reset email has been sent' };
+  }
+
+  const user = users[0];
+
+  // Generate cryptographically secure reset token (32 bytes = 256 bits)
+  const crypto = await import('crypto');
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  const tokenHash = hashToken(resetToken);
+
+  // Token expires in 1 hour
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+
+  // Invalidate any existing unused reset tokens for this user
+  await supabase
+    .from('password_reset_tokens')
+    .update({ used: true, used_at: new Date().toISOString() })
+    .eq('user_id', user.id)
+    .eq('used', false)
+    .gt('expires_at', new Date().toISOString());
+
+  // Store hashed token in database
+  const { error } = await supabase.from('password_reset_tokens').insert({
+    user_id: user.id,
+    token: tokenHash,
+    expires_at: expiresAt.toISOString(),
+  });
+
+  if (error) {
+    throw new Error(`Failed to create reset token: ${error.message}`);
+  }
+
+  // TODO: Send password reset email
+  // For now, return the reset token (in production, this would be sent via email)
+
+  return {
+    success: true,
+    message: 'If an account exists, a reset email has been sent',
+    // DEV ONLY: Return token for testing (remove in production)
+    ...(process.env.NODE_ENV === 'development' && { resetToken }),
+  };
+}
+
+/**
+ * Reset password using reset token
+ */
+export async function resetPassword(token: string, newPassword: string) {
+  const tokenHash = hashToken(token);
+
+  // Find valid reset token
+  const { data: tokens, error } = await supabase
+    .from('password_reset_tokens')
+    .select('*, user:users(*)')
+    .eq('token', tokenHash)
+    .eq('used', false)
+    .gt('expires_at', new Date().toISOString())
+    .limit(1);
+
+  if (error || !tokens || tokens.length === 0) {
+    throw new Error('Invalid or expired reset token');
+  }
+
+  const resetToken = tokens[0];
+
+  // Hash new password
+  const passwordHash = await hashPassword(newPassword);
+
+  // Update user password
+  const { error: updateError } = await supabase
+    .from('users')
+    .update({ password_hash: passwordHash })
+    .eq('id', resetToken.user_id);
+
+  if (updateError) {
+    throw new Error(`Failed to update password: ${updateError.message}`);
+  }
+
+  // Mark token as used
+  const { error: tokenError } = await supabase
+    .from('password_reset_tokens')
+    .update({ used: true, used_at: new Date().toISOString() })
+    .eq('id', resetToken.id);
+
+  if (tokenError) {
+    throw new Error(`Failed to mark token as used: ${tokenError.message}`);
+  }
+
+  // Revoke all existing refresh tokens for security
+  await supabase
+    .from('refresh_tokens')
+    .update({ revoked: true, revoked_at: new Date().toISOString() })
+    .eq('user_id', resetToken.user_id)
+    .eq('revoked', false);
+
+  return {
+    success: true,
+    message: 'Password has been reset successfully',
+  };
+}

@@ -9,16 +9,22 @@ import {
   loginSchema,
   refreshTokenSchema,
   logoutSchema,
+  requestPasswordResetSchema,
+  resetPasswordSchema,
   RegisterInput,
   LoginInput,
   RefreshTokenInput,
   LogoutInput,
+  RequestPasswordResetInput,
+  ResetPasswordInput,
 } from '../types/auth.schemas.js';
 import {
   registerUser,
   loginUser,
   refreshAccessToken,
   logoutUser,
+  requestPasswordReset,
+  resetPassword,
 } from '../services/auth.supabase.js';
 
 export async function authRoutes(fastify: FastifyInstance) {
@@ -247,6 +253,111 @@ export async function authRoutes(fastify: FastifyInstance) {
           success: true,
           message: 'Logged out successfully',
         });
+      } catch (error) {
+        if (error instanceof Error) {
+          return reply.code(400).send({
+            success: false,
+            error: error.message,
+          });
+        }
+        return reply.code(500).send({
+          success: false,
+          error: 'Internal server error',
+        });
+      }
+    }
+  );
+
+  /**
+   * POST /auth/forgot-password
+   * Request password reset by email
+   */
+  fastify.post<{ Body: RequestPasswordResetInput }>(
+    '/auth/forgot-password',
+    {
+      schema: {
+        description: 'Request password reset email',
+        tags: ['Authentication'],
+        body: {
+          type: 'object',
+          required: ['email'],
+          properties: {
+            email: { type: 'string', format: 'email' },
+          },
+        },
+        response: {
+          200: {
+            type: 'object',
+            properties: {
+              success: { type: 'boolean' },
+              message: { type: 'string' },
+            },
+          },
+        },
+      },
+    },
+    async (request: FastifyRequest<{ Body: RequestPasswordResetInput }>, reply: FastifyReply) => {
+      try {
+        // Validate input
+        const validatedData = requestPasswordResetSchema.parse(request.body);
+
+        // Request password reset
+        const result = await requestPasswordReset(validatedData.email);
+
+        return reply.code(200).send(result);
+      } catch (error) {
+        if (error instanceof Error) {
+          return reply.code(400).send({
+            success: false,
+            error: error.message,
+          });
+        }
+        return reply.code(500).send({
+          success: false,
+          error: 'Internal server error',
+        });
+      }
+    }
+  );
+
+  /**
+   * POST /auth/reset-password
+   * Reset password using reset token
+   */
+  fastify.post<{ Body: ResetPasswordInput }>(
+    '/auth/reset-password',
+    {
+      schema: {
+        description: 'Reset password with token',
+        tags: ['Authentication'],
+        body: {
+          type: 'object',
+          required: ['token', 'newPassword'],
+          properties: {
+            token: { type: 'string' },
+            newPassword: { type: 'string', minLength: 8 },
+          },
+        },
+        response: {
+          200: {
+            type: 'object',
+            properties: {
+              success: { type: 'boolean' },
+              message: { type: 'string' },
+            },
+          },
+        },
+      },
+    },
+    async (request: FastifyRequest<{ Body: ResetPasswordInput }>, reply: FastifyReply) => {
+      try {
+        // Validate input
+        const validatedData = resetPasswordSchema.parse(request.body);
+
+        // Reset password
+        const result = await resetPassword(validatedData.token, validatedData.newPassword);
+
+        return reply.code(200).send(result);
       } catch (error) {
         if (error instanceof Error) {
           return reply.code(400).send({
