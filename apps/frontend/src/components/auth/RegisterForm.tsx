@@ -4,11 +4,14 @@ import { Button, Input } from '@/shared/ui';
 import { FormField, FormLabel, FormError } from '@/shared/forms';
 import { useAuth } from '@/hooks';
 import { ROUTES } from '@/constants/routes';
-import type { RegisterInput } from '@/types';
 
-type RegisterFormData = RegisterInput & {
-  confirm_password: string;
-};
+interface RegisterFormData {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  confirmPassword: string;
+}
 
 export function RegisterForm() {
   const { register: registerUser, isRegistering } = useAuth();
@@ -22,40 +25,45 @@ export function RegisterForm() {
   const password = watch('password');
 
   const onSubmit = (data: RegisterFormData) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { confirm_password, ...registerData } = data;
-    registerUser(registerData);
+    registerUser({
+      email: data.email,
+      password: data.password,
+      firstName: data.firstName,
+      lastName: data.lastName,
+    });
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <FormField>
-        <FormLabel htmlFor="first_name" required>
-          First Name
-        </FormLabel>
-        <Input
-          id="first_name"
-          autoComplete="given-name"
-          {...register('first_name', {
-            required: 'First name is required',
-          })}
-        />
-        <FormError message={errors.first_name?.message} />
-      </FormField>
+      <div className="grid grid-cols-2 gap-4">
+        <FormField>
+          <FormLabel htmlFor="firstName" required>
+            First Name
+          </FormLabel>
+          <Input
+            id="firstName"
+            autoComplete="given-name"
+            {...register('firstName', {
+              required: 'First name is required',
+            })}
+          />
+          <FormError message={errors.firstName?.message} />
+        </FormField>
 
-      <FormField>
-        <FormLabel htmlFor="last_name" required>
-          Last Name
-        </FormLabel>
-        <Input
-          id="last_name"
-          autoComplete="family-name"
-          {...register('last_name', {
-            required: 'Last name is required',
-          })}
-        />
-        <FormError message={errors.last_name?.message} />
-      </FormField>
+        <FormField>
+          <FormLabel htmlFor="lastName" required>
+            Last Name
+          </FormLabel>
+          <Input
+            id="lastName"
+            autoComplete="family-name"
+            {...register('lastName', {
+              required: 'Last name is required',
+            })}
+          />
+          <FormError message={errors.lastName?.message} />
+        </FormField>
+      </div>
 
       <FormField>
         <FormLabel htmlFor="email" required>
@@ -77,19 +85,6 @@ export function RegisterForm() {
       </FormField>
 
       <FormField>
-        <FormLabel htmlFor="org_name" required>
-          Organization Name
-        </FormLabel>
-        <Input
-          id="org_name"
-          {...register('org_name', {
-            required: 'Organization name is required',
-          })}
-        />
-        <FormError message={errors.org_name?.message} />
-      </FormField>
-
-      <FormField>
         <FormLabel htmlFor="password" required>
           Password
         </FormLabel>
@@ -106,23 +101,23 @@ export function RegisterForm() {
           })}
         />
         <FormError message={errors.password?.message} />
+        <p className="mt-1 text-xs text-gray-500">Must be at least 8 characters long</p>
       </FormField>
 
       <FormField>
-        <FormLabel htmlFor="confirm_password" required>
+        <FormLabel htmlFor="confirmPassword" required>
           Confirm Password
         </FormLabel>
         <Input
-          id="confirm_password"
+          id="confirmPassword"
           type="password"
           autoComplete="new-password"
-          {...register('confirm_password', {
+          {...register('confirmPassword', {
             required: 'Please confirm your password',
-            validate: (value) =>
-              value === password || 'Passwords do not match',
+            validate: (value) => value === password || 'Passwords do not match',
           })}
         />
-        <FormError message={errors.confirm_password?.message} />
+        <FormError message={errors.confirmPassword?.message} />
       </FormField>
 
       <Button type="submit" className="w-full" disabled={isRegistering}>
@@ -131,10 +126,7 @@ export function RegisterForm() {
 
       <p className="text-center text-sm text-gray-600">
         Already have an account?{' '}
-        <Link
-          to={ROUTES.LOGIN}
-          className="font-medium text-primary-600 hover:text-primary-500"
-        >
+        <Link to={ROUTES.LOGIN} className="font-medium text-primary-600 hover:text-primary-500">
           Sign in
         </Link>
       </p>

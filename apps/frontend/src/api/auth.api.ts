@@ -1,10 +1,5 @@
 import { apiClient } from './client';
-import type {
-  LoginResponse,
-  RegisterInput,
-  User,
-  AuthTokens,
-} from '@/types';
+import type { LoginResponse, RegisterInput, User, AuthTokens } from '@/types';
 
 /**
  * Authentication API
@@ -15,15 +10,25 @@ export const authApi = {
    */
   login: async (email: string, password: string): Promise<LoginResponse> => {
     const response = await apiClient.post('/auth/login', { email, password });
-    return response.data.data;
+    return response.data;
   },
 
   /**
-   * Register new user and organization
+   * Register new user
    */
-  register: async (input: RegisterInput): Promise<LoginResponse> => {
-    const response = await apiClient.post('/auth/register', input);
-    return response.data.data;
+  register: async (
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string
+  ): Promise<{ success: boolean; user: User }> => {
+    const response = await apiClient.post('/auth/register', {
+      email,
+      password,
+      firstName,
+      lastName,
+    });
+    return response.data;
   },
 
   /**
@@ -31,16 +36,32 @@ export const authApi = {
    */
   refresh: async (refreshToken: string): Promise<AuthTokens> => {
     const response = await apiClient.post('/auth/refresh', {
-      refresh_token: refreshToken,
+      refreshToken,
     });
-    return response.data.data;
+    return response.data;
   },
 
   /**
    * Logout
    */
   logout: async (refreshToken: string): Promise<void> => {
-    await apiClient.post('/auth/logout', { refresh_token: refreshToken });
+    await apiClient.post('/auth/logout', { refreshToken });
+  },
+
+  /**
+   * Verify email with token
+   */
+  verifyEmail: async (token: string): Promise<{ success: boolean; message: string }> => {
+    const response = await apiClient.post('/auth/verify-email', { token });
+    return response.data;
+  },
+
+  /**
+   * Resend verification email
+   */
+  resendVerification: async (email: string): Promise<{ success: boolean; message: string }> => {
+    const response = await apiClient.post('/auth/resend-verification', { email });
+    return response.data;
   },
 
   /**
@@ -66,15 +87,15 @@ export const authApi = {
    * Get current user profile
    */
   getProfile: async (): Promise<User> => {
-    const response = await apiClient.get('/users/me');
-    return response.data.data;
+    const response = await apiClient.get('/user/me');
+    return response.data.user;
   },
 
   /**
    * Update user profile
    */
   updateProfile: async (data: Partial<User>): Promise<User> => {
-    const response = await apiClient.patch('/users/me', data);
-    return response.data.data;
+    const response = await apiClient.patch('/user/profile', data);
+    return response.data.user;
   },
 };
