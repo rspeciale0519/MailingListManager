@@ -960,12 +960,12 @@ git branch -d feature/contacts-inline-edit
 - ✅ 47 passing backend tests covering all core auth
 - ✅ **All auth-related files <450 LOC verified**
 
-**Phase 1B: Advanced Authentication Features (Partial Complete)**
+**Phase 1B: Advanced Authentication Features (In Progress)**
 
-- [x] MFA optional setup available ✅ COMPLETE
-- [x] OAuth login with Google ✅ COMPLETE
-- [ ] OAuth login with Microsoft (pending)
-- [ ] Password reset flow complete (pending)
+- ✅ MFA optional setup available - COMPLETE
+- ✅ OAuth login with Google - COMPLETE
+- [ ] OAuth login with Microsoft (low priority - can be added later)
+- [ ] Password reset flow (HIGH PRIORITY - essential user functionality)
 
 ---
 
