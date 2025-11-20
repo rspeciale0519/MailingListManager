@@ -2,7 +2,7 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 
 export async function healthRoutes(server: FastifyInstance) {
   // Basic health check
-  server.get('/health', async (request: FastifyRequest, reply: FastifyReply) => {
+  server.get('/health', async (_request: FastifyRequest, reply: FastifyReply) => {
     return reply.status(200).send({
       status: 'ok',
       timestamp: new Date().toISOString(),
@@ -12,7 +12,7 @@ export async function healthRoutes(server: FastifyInstance) {
   });
 
   // Detailed health check
-  server.get('/health/detailed', async (request: FastifyRequest, reply: FastifyReply) => {
+  server.get('/health/detailed', async (_request: FastifyRequest, reply: FastifyReply) => {
     const health = {
       status: 'ok',
       timestamp: new Date().toISOString(),
@@ -20,7 +20,7 @@ export async function healthRoutes(server: FastifyInstance) {
       environment: process.env.NODE_ENV,
       services: {
         database: 'pending', // Will check Prisma connection
-        redis: 'pending',    // Will check Redis connection
+        redis: 'pending', // Will check Redis connection
       },
     };
 

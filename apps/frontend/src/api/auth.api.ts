@@ -1,5 +1,5 @@
 import { apiClient } from './client';
-import type { LoginResponse, RegisterInput, User, AuthTokens } from '@/types';
+import type { LoginResponse, User, AuthTokens } from '@/types';
 
 /**
  * Authentication API

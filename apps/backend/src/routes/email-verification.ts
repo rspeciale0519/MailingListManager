@@ -94,7 +94,7 @@ export async function emailVerificationRoutes(fastify: FastifyInstance) {
           await sendWelcomeEmail(user.email, user.first_name || 'there');
         } catch (emailError) {
           // Log error but don't fail the request
-          fastify.log.error('Failed to send welcome email:', emailError);
+          fastify.log.error({ error: emailError }, 'Failed to send welcome email');
         }
 
         return reply.code(200).send({

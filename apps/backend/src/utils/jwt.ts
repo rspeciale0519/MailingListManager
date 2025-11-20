@@ -40,11 +40,13 @@ export function generateAccessToken(userId: string, email: string): string {
     type: 'access',
   };
 
-  const token = jwt.sign(payload, JWT_ACCESS_SECRET, {
-    expiresIn: JWT_ACCESS_EXPIRY,
+  const options: jwt.SignOptions = {
+    expiresIn: JWT_ACCESS_EXPIRY as jwt.SignOptions['expiresIn'],
     issuer: 'mlm-api',
     subject: userId,
-  });
+  };
+
+  const token = jwt.sign(payload, JWT_ACCESS_SECRET, options);
 
   return token;
 }
@@ -62,11 +64,13 @@ export function generateRefreshToken(userId: string, email: string): string {
     type: 'refresh',
   };
 
-  const token = jwt.sign(payload, JWT_REFRESH_SECRET, {
-    expiresIn: JWT_REFRESH_EXPIRY,
+  const options: jwt.SignOptions = {
+    expiresIn: JWT_REFRESH_EXPIRY as jwt.SignOptions['expiresIn'],
     issuer: 'mlm-api',
     subject: userId,
-  });
+  };
+
+  const token = jwt.sign(payload, JWT_REFRESH_SECRET, options);
 
   return token;
 }
@@ -161,11 +165,13 @@ export function generateVerificationToken(userId: string, email: string): string
     type: 'verification',
   };
 
-  const token = jwt.sign(payload, JWT_VERIFICATION_SECRET, {
-    expiresIn: JWT_VERIFICATION_EXPIRY,
+  const options: jwt.SignOptions = {
+    expiresIn: JWT_VERIFICATION_EXPIRY as jwt.SignOptions['expiresIn'],
     issuer: 'mlm-api',
     subject: userId,
-  });
+  };
+
+  const token = jwt.sign(payload, JWT_VERIFICATION_SECRET, options);
 
   return token;
 }

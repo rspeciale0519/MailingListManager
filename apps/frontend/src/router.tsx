@@ -9,18 +9,7 @@ import { ListsPage } from '@/pages/lists/ListsPage';
 import { ImportsPage } from '@/pages/imports/ImportsPage';
 import { ExportsPage } from '@/pages/exports/ExportsPage';
 import { ROUTES } from '@/constants/routes';
-import { useAuthStore } from '@/store/authStore';
-
-// Protected route wrapper
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user } = useAuthStore();
-
-  if (!user) {
-    return <Navigate to={ROUTES.LOGIN} replace />;
-  }
-
-  return <>{children}</>;
-}
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 
 export const router = createBrowserRouter([
   // Auth routes

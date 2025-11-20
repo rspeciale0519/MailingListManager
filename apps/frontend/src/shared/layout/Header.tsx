@@ -1,23 +1,30 @@
 import { Search, Bell, Menu } from 'lucide-react';
-import { Button, Input, Avatar, AvatarFallback, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/shared/ui';
+import {
+  Button,
+  Input,
+  Avatar,
+  AvatarFallback,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/shared/ui';
 import { useAuth } from '@/hooks';
 import { useUiStore } from '@/store/uiStore';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/constants/routes';
-import { useAuthStore } from '@/store/authStore';
 
 export function Header() {
   const { user } = useAuth();
-  const { tokens } = useAuthStore();
   const { logout } = useAuth();
   const { toggleSidebar } = useUiStore();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    if (tokens?.refresh_token) {
-      logout(tokens.refresh_token);
-      navigate(ROUTES.LOGIN);
-    }
+    logout();
+    navigate(ROUTES.LOGIN);
   };
 
   const userName = user ? `${user.first_name} ${user.last_name}`.trim() : '';
@@ -32,12 +39,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-gray-200 bg-white px-4 lg:px-6">
       {/* Mobile menu button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={toggleSidebar}
-        className="lg:hidden"
-      >
+      <Button variant="ghost" size="icon" onClick={toggleSidebar} className="lg:hidden">
         <Menu className="h-5 w-5" />
       </Button>
 
@@ -45,11 +47,7 @@ export function Header() {
       <div className="flex-1 max-w-md">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-          <Input
-            type="search"
-            placeholder="Search contacts..."
-            className="pl-10"
-          />
+          <Input type="search" placeholder="Search contacts..." className="pl-10" />
         </div>
       </div>
 
@@ -78,12 +76,8 @@ export function Header() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate(ROUTES.PROFILE)}>
-              Profile
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate(ROUTES.SETTINGS)}>
-              Settings
-            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate(ROUTES.PROFILE)}>Profile</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate(ROUTES.SETTINGS)}>Settings</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
           </DropdownMenuContent>

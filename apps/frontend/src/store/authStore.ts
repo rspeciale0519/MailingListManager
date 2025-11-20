@@ -68,13 +68,13 @@ export const useAuthStore = create<AuthState>()(
 
           // Store tokens
           const tokens: AuthTokens = {
-            access_token: response.accessToken,
-            refresh_token: response.refreshToken,
+            access_token: response.access_token,
+            refresh_token: response.refresh_token,
             expires_in: 900, // 15 minutes
           };
 
-          localStorage.setItem('access_token', response.accessToken);
-          localStorage.setItem('refresh_token', response.refreshToken);
+          localStorage.setItem('access_token', response.access_token);
+          localStorage.setItem('refresh_token', response.refresh_token);
 
           set({
             user: response.user,

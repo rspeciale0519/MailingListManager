@@ -89,7 +89,7 @@ await server.register(emailVerificationRoutes, { prefix: '/api' });
 await server.register(userRoutes, { prefix: '/api' });
 
 // Global error handler
-server.setErrorHandler((error, request, reply) => {
+server.setErrorHandler((error, _request, reply) => {
   server.log.error(error);
 
   reply.status(error.statusCode || 500).send({

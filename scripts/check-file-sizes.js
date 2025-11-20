@@ -6,8 +6,8 @@
  * Critical for maintainability as per Development Roadmap
  */
 
-import { readdirSync, statSync, readFileSync } from 'fs';
-import { join } from 'path';
+const { readdirSync, statSync, readFileSync } = require('fs');
+const { join } = require('path');
 
 const MAX_LINES = 450;
 const EXTENSIONS = ['.ts', '.tsx'];
