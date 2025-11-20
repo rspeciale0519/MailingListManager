@@ -5,6 +5,8 @@ import swaggerUI from '@fastify/swagger-ui';
 import 'dotenv/config';
 import { healthRoutes } from './routes/health.js';
 import { authRoutes } from './routes/auth.js';
+import { oauthRoutes } from './routes/oauth.routes.js';
+import { mfaRoutes } from './routes/mfa.routes.js';
 import { userRoutes } from './routes/user.js';
 import { emailVerificationRoutes } from './routes/email-verification.js';
 
@@ -85,6 +87,8 @@ await server.register(cors, {
 // Register routes
 await server.register(healthRoutes, { prefix: '/api' });
 await server.register(authRoutes, { prefix: '/api' });
+await server.register(oauthRoutes, { prefix: '/api' });
+await server.register(mfaRoutes, { prefix: '/api' });
 await server.register(emailVerificationRoutes, { prefix: '/api' });
 await server.register(userRoutes, { prefix: '/api' });
 
