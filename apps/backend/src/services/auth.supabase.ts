@@ -4,7 +4,6 @@
  * Useful when Prisma can't reach the database directly
  */
 
-import { createClient } from '@supabase/supabase-js';
 import { hashPassword, verifyPassword } from '../utils/password.js';
 import {
   generateAccessToken,
@@ -12,17 +11,10 @@ import {
   verifyRefreshToken,
   hashToken,
   getRefreshTokenExpiry,
+  generateVerificationToken,
 } from '../utils/jwt.js';
-
-const SUPABASE_URL = process.env.SUPABASE_URL || '';
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-
-if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-  throw new Error('Supabase credentials must be configured in environment variables');
-}
-
-// Create Supabase admin client (use service role key for backend operations)
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+import { sendVerificationEmail } from './email.service.js';
+import { supabase } from '../config/supabase.js';
 
 /**
  * Register a new user
@@ -64,6 +56,15 @@ export async function registerUser(data: {
 
   if (error) {
     throw new Error(`Failed to create user: ${error.message}`);
+  }
+
+  // Generate verification token and send email
+  try {
+    const verificationToken = generateVerificationToken(newUser.id, newUser.email);
+    await sendVerificationEmail(newUser.email, verificationToken);
+  } catch (emailError) {
+    // Log error but don't fail registration
+    console.error('Failed to send verification email:', emailError);
   }
 
   return newUser;

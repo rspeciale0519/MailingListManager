@@ -6,6 +6,7 @@ import 'dotenv/config';
 import { healthRoutes } from './routes/health.js';
 import { authRoutes } from './routes/auth.js';
 import { userRoutes } from './routes/user.js';
+import { emailVerificationRoutes } from './routes/email-verification.js';
 
 const PORT = parseInt(process.env.PORT || '3001', 10);
 const HOST = process.env.HOST || '0.0.0.0';
@@ -84,6 +85,7 @@ await server.register(cors, {
 // Register routes
 await server.register(healthRoutes, { prefix: '/api' });
 await server.register(authRoutes, { prefix: '/api' });
+await server.register(emailVerificationRoutes, { prefix: '/api' });
 await server.register(userRoutes, { prefix: '/api' });
 
 // Global error handler

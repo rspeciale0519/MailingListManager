@@ -9,10 +9,12 @@ import crypto from 'crypto';
 // JWT secrets from environment variables
 const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || '';
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || '';
+const JWT_VERIFICATION_SECRET = process.env.JWT_VERIFICATION_SECRET || '';
 const JWT_ACCESS_EXPIRY = process.env.JWT_ACCESS_EXPIRY || '15m';
 const JWT_REFRESH_EXPIRY = process.env.JWT_REFRESH_EXPIRY || '30d';
+const JWT_VERIFICATION_EXPIRY = process.env.JWT_VERIFICATION_EXPIRY || '24h';
 
-if (!JWT_ACCESS_SECRET || !JWT_REFRESH_SECRET) {
+if (!JWT_ACCESS_SECRET || !JWT_REFRESH_SECRET || !JWT_VERIFICATION_SECRET) {
   throw new Error('JWT secrets must be configured in environment variables');
 }
 
@@ -22,7 +24,7 @@ if (!JWT_ACCESS_SECRET || !JWT_REFRESH_SECRET) {
 export interface JWTPayload {
   userId: string;
   email: string;
-  type: 'access' | 'refresh';
+  type: 'access' | 'refresh' | 'verification' | 'password_reset';
 }
 
 /**
@@ -144,4 +146,90 @@ export function getRefreshTokenExpiry(): Date {
 
   const milliseconds = num * multipliers[unit as keyof typeof multipliers];
   return new Date(Date.now() + milliseconds);
+}
+
+/**
+ * Generate an email verification token
+ * @param userId - User ID
+ * @param email - User email
+ * @returns Signed JWT verification token (24h expiry)
+ */
+export function generateVerificationToken(userId: string, email: string): string {
+  const payload: JWTPayload = {
+    userId,
+    email,
+    type: 'verification',
+  };
+
+  const token = jwt.sign(payload, JWT_VERIFICATION_SECRET, {
+    expiresIn: JWT_VERIFICATION_EXPIRY,
+    issuer: 'mlm-api',
+    subject: userId,
+  });
+
+  return token;
+}
+
+/**
+ * Verify and decode an email verification token
+ * @param token - JWT verification token to verify
+ * @returns Decoded payload if valid, null otherwise
+ */
+export function verifyVerificationToken(token: string): JWTPayload | null {
+  try {
+    const decoded = jwt.verify(token, JWT_VERIFICATION_SECRET, {
+      issuer: 'mlm-api',
+    }) as JWTPayload;
+
+    if (decoded.type !== 'verification') {
+      return null;
+    }
+
+    return decoded;
+  } catch (error) {
+    return null;
+  }
+}
+
+/**
+ * Generate a password reset token
+ * @param userId - User ID
+ * @param email - User email
+ * @returns Signed JWT password reset token (1h expiry)
+ */
+export function generatePasswordResetToken(userId: string, email: string): string {
+  const payload: JWTPayload = {
+    userId,
+    email,
+    type: 'password_reset',
+  };
+
+  const token = jwt.sign(payload, JWT_VERIFICATION_SECRET, {
+    expiresIn: '1h',
+    issuer: 'mlm-api',
+    subject: userId,
+  });
+
+  return token;
+}
+
+/**
+ * Verify and decode a password reset token
+ * @param token - JWT password reset token to verify
+ * @returns Decoded payload if valid, null otherwise
+ */
+export function verifyPasswordResetToken(token: string): JWTPayload | null {
+  try {
+    const decoded = jwt.verify(token, JWT_VERIFICATION_SECRET, {
+      issuer: 'mlm-api',
+    }) as JWTPayload;
+
+    if (decoded.type !== 'password_reset') {
+      return null;
+    }
+
+    return decoded;
+  } catch (error) {
+    return null;
+  }
 }
