@@ -136,6 +136,26 @@ export function useAuth() {
     },
   });
 
+  // Reset password mutation
+  const resetPasswordMutation = useMutation({
+    mutationFn: ({ token, newPassword }: { token: string; newPassword: string }) =>
+      authApi.resetPassword(token, newPassword),
+    onSuccess: () => {
+      toast({
+        title: 'Password reset successful',
+        description: 'Your password has been reset. Please log in with your new password.',
+      });
+      navigate(ROUTES.LOGIN);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: 'Password reset failed',
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
+
   // Get user profile
   const { data: profile, isLoading: isLoadingProfile } = useQuery({
     queryKey: ['user', 'profile'],
@@ -182,6 +202,8 @@ export function useAuth() {
     isResendingVerification: resendVerificationMutation.isPending,
     forgotPassword: forgotPasswordMutation.mutate,
     isSendingResetEmail: forgotPasswordMutation.isPending,
+    resetPassword: resetPasswordMutation.mutate,
+    isResettingPassword: resetPasswordMutation.isPending,
     updateProfile: updateProfileMutation.mutate,
     isUpdatingProfile: updateProfileMutation.isPending,
   };
