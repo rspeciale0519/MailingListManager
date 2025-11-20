@@ -50,3 +50,12 @@ export const logoutSchema = z.object({
 });
 
 export type LogoutInput = z.infer<typeof logoutSchema>;
+
+/**
+ * Google OAuth callback schema
+ */
+export const googleOAuthCallbackSchema = z.object({
+  code: z.string().min(1, 'Authorization code is required'),
+});
+
+export type GoogleOAuthCallbackInput = z.infer<typeof googleOAuthCallbackSchema>;
