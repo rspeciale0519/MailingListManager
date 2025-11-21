@@ -3,6 +3,7 @@ import { AppLayout } from '@/shared/layout/AppLayout';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
 import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage';
+import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage';
 import { DashboardPage } from '@/pages/dashboard/DashboardPage';
 import { ContactsPage } from '@/pages/contacts/ContactsPage';
 import { ListsPage } from '@/pages/lists/ListsPage';
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
   {
     path: ROUTES.FORGOT_PASSWORD,
     element: <ForgotPasswordPage />,
+  },
+  {
+    path: ROUTES.RESET_PASSWORD,
+    element: <ResetPasswordPage />,
   },
 
   // Protected app routes

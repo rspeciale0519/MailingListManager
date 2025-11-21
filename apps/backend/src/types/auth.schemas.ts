@@ -50,3 +50,31 @@ export const logoutSchema = z.object({
 });
 
 export type LogoutInput = z.infer<typeof logoutSchema>;
+
+/**
+ * Google OAuth callback schema
+ */
+export const googleOAuthCallbackSchema = z.object({
+  code: z.string().min(1, 'Authorization code is required'),
+});
+
+export type GoogleOAuthCallbackInput = z.infer<typeof googleOAuthCallbackSchema>;
+
+/**
+ * Enable MFA schema
+ */
+export const enableMFASchema = z.object({
+  code: z.string().min(6, 'Code must be 6 digits').max(6, 'Code must be 6 digits'),
+  secret: z.string().min(1, 'Secret is required'),
+});
+
+export type EnableMFAInput = z.infer<typeof enableMFASchema>;
+
+/**
+ * Verify MFA code schema
+ */
+export const verifyMFACodeSchema = z.object({
+  code: z.string().min(6, 'Code must be 6 digits').max(6, 'Code must be 6 digits'),
+});
+
+export type VerifyMFACodeInput = z.infer<typeof verifyMFACodeSchema>;
