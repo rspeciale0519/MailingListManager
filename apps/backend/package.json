@@ -18,7 +18,7 @@
     "@fastify/swagger": "^9.6.1",
     "@fastify/swagger-ui": "^5.2.3",
     "@fastify/websocket": "^8.3.1",
-    "@prisma/client": "^5.7.1",
+    "@prisma/client": "^7.0.0",
     "@supabase/supabase-js": "^2.83.0",
     "bcrypt": "^5.1.1",
     "bullmq": "^5.1.0",
