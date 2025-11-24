@@ -189,16 +189,14 @@ export async function updateOrganizationMember(
     RETURNING id, user_id, org_id, org_role, permissions, status
   `;
 
-  const result = await prisma.$queryRawUnsafe<
-    Array<{
-      id: string;
-      user_id: string;
-      org_id: string;
-      org_role: string;
-      permissions: any;
-      status: string;
-    }>
-  >(query, ...values);
+  const result: Array<{
+    id: string;
+    user_id: string;
+    org_id: string;
+    org_role: string;
+    permissions: any;
+    status: string;
+  }> = await (prisma.$queryRawUnsafe as any)(query, ...values);
 
   if (result.length === 0) {
     throw new Error('Membership not found');

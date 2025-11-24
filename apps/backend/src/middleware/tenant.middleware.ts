@@ -14,7 +14,7 @@ import { prisma } from '../utils/prisma.js';
  * Usage: Apply this middleware to routes that need tenant isolation
  */
 export async function setOrgContext(request: FastifyRequest, reply: FastifyReply) {
-  const userId = request.user?.id;
+  const userId = request.user?.userId;
 
   if (!userId) {
     reply.code(401).send({ error: 'Unauthorized' });
@@ -62,7 +62,7 @@ export async function setOrgContext(request: FastifyRequest, reply: FastifyReply
  * Useful for endpoints that can work with or without an org context
  */
 export async function optionalOrgContext(request: FastifyRequest, _reply: FastifyReply) {
-  const userId = request.user?.id;
+  const userId = request.user?.userId;
 
   if (!userId) {
     return; // No user, skip org context

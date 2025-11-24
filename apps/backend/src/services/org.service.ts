@@ -26,7 +26,7 @@ export async function createOrganization(data: CreateOrgData) {
   }
 
   // Create organization and account owner membership in a transaction
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: any) => {
     // Create organization
     const org = await tx.$queryRaw<
       Array<{
@@ -192,17 +192,15 @@ export async function updateOrganization(orgId: string, data: UpdateOrgData) {
     RETURNING id, name, slug, plan, settings, status, updated_at
   `;
 
-  const result = await prisma.$queryRawUnsafe<
-    Array<{
-      id: string;
-      name: string;
-      slug: string;
-      plan: string;
-      settings: any;
-      status: string;
-      updated_at: Date;
-    }>
-  >(query, ...values);
+  const result: Array<{
+    id: string;
+    name: string;
+    slug: string;
+    plan: string;
+    settings: any;
+    status: string;
+    updated_at: Date;
+  }> = await (prisma.$queryRawUnsafe as any)(query, ...values);
 
   if (result.length === 0) {
     throw new Error('Organization not found or update failed');
