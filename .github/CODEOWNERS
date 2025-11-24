@@ -1,0 +1,29 @@
+# CODEOWNERS file
+# These owners will be the default owners for everything in the repo.
+# Unless a later match takes precedence, they will be requested for
+# review when someone opens a pull request.
+
+# Global owners
+* @rspeciale0519
+
+# Backend code
+/apps/backend/ @rspeciale0519
+/apps/backend/src/services/ @rspeciale0519
+/apps/backend/src/routes/ @rspeciale0519
+
+# Frontend code
+/apps/frontend/ @rspeciale0519
+/apps/frontend/src/components/ @rspeciale0519
+
+# Infrastructure and CI/CD
+/.github/ @rspeciale0519
+/apps/backend/Dockerfile @rspeciale0519
+/apps/frontend/Dockerfile @rspeciale0519
+/docker-compose.yml @rspeciale0519
+
+# Database
+/apps/backend/prisma/ @rspeciale0519
+
+# Documentation
+/docs/ @rspeciale0519
+*.md @rspeciale0519

@@ -1,0 +1,4 @@
+/**
+ * Organization service types
+ */
+export {};

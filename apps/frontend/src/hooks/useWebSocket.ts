@@ -70,7 +70,7 @@ export function useWebSocket() {
       socketRef.current = null;
       setIsConnected(false);
     };
-  }, [tokens?.access_token, currentOrg?.id]);
+  }, [tokens?.access_token, currentOrg]);
 
   /**
    * Subscribe to a specific event
