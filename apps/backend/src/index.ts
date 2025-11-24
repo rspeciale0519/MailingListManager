@@ -9,6 +9,8 @@ import { oauthRoutes } from './routes/oauth.routes.js';
 import { mfaRoutes } from './routes/mfa.routes.js';
 import { userRoutes } from './routes/user.js';
 import { emailVerificationRoutes } from './routes/email-verification.js';
+import { orgRoutes } from './routes/org.routes.js';
+import { orgMemberRoutes } from './routes/org-members.routes.js';
 
 const PORT = parseInt(process.env.PORT || '3001', 10);
 const HOST = process.env.HOST || '0.0.0.0';
@@ -47,6 +49,10 @@ await server.register(swagger, {
       { name: 'Health', description: 'Health check endpoints' },
       { name: 'Authentication', description: 'User authentication and authorization' },
       { name: 'User', description: 'User profile and account management' },
+      {
+        name: 'Organizations',
+        description: 'Organization (tenant) management and member administration',
+      },
       { name: 'Contacts', description: 'Contact management' },
       { name: 'Lists', description: 'List management' },
       { name: 'Import', description: 'Data import operations' },
@@ -91,6 +97,8 @@ await server.register(oauthRoutes, { prefix: '/api' });
 await server.register(mfaRoutes, { prefix: '/api' });
 await server.register(emailVerificationRoutes, { prefix: '/api' });
 await server.register(userRoutes, { prefix: '/api' });
+await server.register(orgRoutes, { prefix: '/api' });
+await server.register(orgMemberRoutes, { prefix: '/api' });
 
 // Global error handler
 server.setErrorHandler((error, _request, reply) => {
