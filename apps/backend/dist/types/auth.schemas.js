@@ -34,3 +34,22 @@ export const refreshTokenSchema = z.object({
 export const logoutSchema = z.object({
     refreshToken: z.string().min(1, 'Refresh token is required'),
 });
+/**
+ * Google OAuth callback schema
+ */
+export const googleOAuthCallbackSchema = z.object({
+    code: z.string().min(1, 'Authorization code is required'),
+});
+/**
+ * Enable MFA schema
+ */
+export const enableMFASchema = z.object({
+    code: z.string().min(6, 'Code must be 6 digits').max(6, 'Code must be 6 digits'),
+    secret: z.string().min(1, 'Secret is required'),
+});
+/**
+ * Verify MFA code schema
+ */
+export const verifyMFACodeSchema = z.object({
+    code: z.string().min(6, 'Code must be 6 digits').max(6, 'Code must be 6 digits'),
+});
